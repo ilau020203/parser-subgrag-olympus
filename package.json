@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ilau020203/parser-subgrag-olympus/issues"
   },
-  "homepage": "https://github.com/ilau020203/parser-subgrag-olympus#readme"
+  "homepage": "https://github.com/ilau020203/parser-subgrag-olympus#readme",
+  "dependencies": {
+    "axios": "^0.22.0"
+  }
 }
