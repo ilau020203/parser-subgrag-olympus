@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { token } from './config.js';
+import {getWholePeriodOfTime} from './date.js'
 
 const day =60*60*24;
 const dayQuery =`
@@ -55,29 +56,31 @@ function reformToBigArrayForDays(days){
 }
 
 function fillBigArrayForDays(bigArray){
-    let audited=false;
+    
     let out = [];
     for(let i=1;i<bigArray.length;i++){
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         out.push({
             totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             audited:bigArray[i-1].audited,
         });
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+day*(count+1)<bigArray[i].timestamp){
+        timestamp+=day;
+        while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
-                timestamp: (day*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
+                timestamp:timestamp,
                 audited:false,
             });
-            count++;
+            timestamp+=day;
         }
         
     }
     
     out.push({
         totalReverse:bigArray[bigArray.length-1].finalTotalReserves,
-        timestamp:bigArray[bigArray.length-1].timestamp,
+        timestamp:bigArray[bigArray.length-1].timestamp,////?
         audited:bigArray[bigArray.length-1].audited,
     })
     return out;

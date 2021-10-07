@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js';
 import {getTokens} from './getTokens.js'
+import {getWholePeriodOfTime} from './date.js'
 
 const day =60*60*24;
 
@@ -80,8 +81,10 @@ async function reformToBigArrayForDays(days){
 function fillBigArrayForMinues(bigArray){
     let out = [];
     for(let i=1;i<bigArray.length;i++){
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         out.push({
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             profit:bigArray[i-1].profit,
             amount:bigArray[i-1].amount,
             value:bigArray[i-1].value,
@@ -91,10 +94,10 @@ function fillBigArrayForMinues(bigArray){
             sumAmount:bigArray[i-1].sumAmount,
         });
        
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+day*(count+1)<bigArray[i].timestamp){
+        timestamp+=day;
+        while(timestamp<nextTimestamp){
             out.push({
-                timestamp:(day*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
+                timestamp:timestamp,
                 profit:0,
                 amount:0,
                 value:0,
@@ -103,7 +106,7 @@ function fillBigArrayForMinues(bigArray){
                 sumProfit:bigArray[i-1].sumProfit,
                 sumAmount:bigArray[i-1].sumAmount,
             });
-            count++;
+            timestamp+=day;
         }       
     }
     

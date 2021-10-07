@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { token } from './config.js';
+import {getWholePeriodOfTime} from './date.js'
 
 
 const hour =60*60;
@@ -70,24 +71,24 @@ function reformToBigArrayForHours(days){
 }
 
 function fillBigArrayForHours(bigArray){
-    let audited=false;
     let out = [];
     for(let i=1;i<bigArray.length;i++){
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
         out.push({
             totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             audited:bigArray[i-1].audited,
         });
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+hour*(count+1)<bigArray[i].timestamp){
+        timestamp+=hour;
+        while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
-                timestamp: (hour*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
+                timestamp:timestamp,
                 audited:false,
             });
-            count++;
-        }
-        
+            timestamp+=hour;
+        }        
     }
     
     out.push({
@@ -103,31 +104,22 @@ function fillBigArrayFor4Hours(bigArray){
     let fragment=0;
     let out = [];
     for(let i=1;i<bigArray.length;i++){
-        if(bigArray[i-1].audited) audited=true;
-        if(fragment%4==3)
-        {
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
+        out.push({
+            totalReverse:bigArray[i-1].finalTotalReserves,
+            timestamp:timestamp,
+            audited:bigArray[i-1].audited,
+        });
+        timestamp+=4*hour;
+        while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
-                timestamp:bigArray[i-1].timestamp,
-                audited:audited,
+                timestamp:timestamp,
+                audited:false,
             });
-            audited=false;
-        }
-        fragment++;
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+hour*(count+1)<bigArray[i].timestamp){
-            if(fragment%4==3)
-            {
-                out.push({
-                    totalReverse:bigArray[i-1].finalTotalReserves,
-                    timestamp: (hour*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
-                    audited:audited,
-                });
-                audited=false;
-            }
-            fragment++;
-            count++;
-        }
+            timestamp+=4*hour;
+        }        
         
     }
     

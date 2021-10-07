@@ -14,6 +14,7 @@ import fs from 'fs'
 
 
 async function main() {
+    
     let data = JSON.stringify(await getTotalReserveByMinut());
     fs.writeFileSync('resultMinute.json', data);
     data = JSON.stringify(await getTotalReserveByHour());
@@ -38,7 +39,6 @@ async function main() {
     fs.writeFileSync('resultDayManage.json', data);
     data = JSON.stringify(await getManageBy4Hour());
     fs.writeFileSync('result4HourManage.json', data);
-    
 
 }
 

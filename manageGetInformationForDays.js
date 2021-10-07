@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js';
 import {getTokens} from './getTokens.js'
+import {getWholePeriodOfTime} from './date.js'
 
 const day =60*60*24;
 
@@ -89,22 +90,24 @@ function fillBigArrayForMinues(bigArray){
         return out;
     }
     for(let i=1;i<bigArray.length;i++){
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         out.push({
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             amount:bigArray[i-1].amount,
             sender:bigArray[i-1].sender,
             sumAmount:bigArray[i-1].sumAmount,
         });
        
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+day*(count+1)<bigArray[i].timestamp){
+        timestamp+=day
+        while(timestamp<nextTimestamp){
             out.push({
-                timestamp:(day*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
+                timestamp:timestamp,
                 amount:0,
                 sender:[],
                 sumAmount:bigArray[i-1].sumAmount,
             });
-            count++;
+            timestamp+=day
         }       
     }
     

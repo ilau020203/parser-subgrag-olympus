@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js';
+import {getWholePeriodOfTime} from './date.js'
+
 
 const minute =60;
 
@@ -63,27 +65,26 @@ function reformToBigArrayForMinutes(days){
 }
 function fillBigArrayForMinues(bigArray){
     let out = [];
+   
     for(let i=1;i<bigArray.length;i++){
-       
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         out.push({
             totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             audited:bigArray[i-1].audited,
         });
-       
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+minute*(count+1)<bigArray[i].timestamp){
+        timestamp+=minute;
+        while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
-                timestamp: (minute*count+parseInt(bigArray[i-1].timestamp)).toString(),
+                timestamp:timestamp,
                 audited:false,
             });
-            count++;
+            timestamp+=minute;
         }
-       
         
     }
-    
     out.push({
         totalReverse:bigArray[bigArray.length-1].finalTotalReserves,
         timestamp:bigArray[bigArray.length-1].timestamp,

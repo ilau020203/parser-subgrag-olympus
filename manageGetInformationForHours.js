@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js';
 import {getTokens} from './getTokens.js'
+import {getWholePeriodOfTime} from './date.js'
 
 const hour =60*60;
 
@@ -111,23 +112,24 @@ function fillBigArrayForHours(bigArray){
        return out;
     }
     for(let i=1;i<bigArray.length;i++){
-       
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         out.push({
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             amount:bigArray[i-1].amount,
             sender:bigArray[i-1].sender,
             sumAmount:bigArray[i-1].sumAmount,
         });
        
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+hour*(count+1)<bigArray[i].timestamp){
+        timestamp+=hour
+        while(timestamp<nextTimestamp){
             out.push({
-            timestamp:(hour*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
+            timestamp:timestamp,
             amount:0,
             sender:[],
             sumAmount:bigArray[i-1].sumAmount,
             });
-            count++;
+            timestamp+=hour
         }       
     }
     
@@ -164,12 +166,14 @@ function fillBigArrayFor4Hours(bigArray){
         return out;
     }
     for(let i=1;i<bigArray.length;i++){
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
          amount+=bigArray[i-1].amount
          sender=sender.concat(bigArray[i-1].sender)
         if(fragment%4==3)
         {
             out.push({
-                timestamp:bigArray[i-1].timestamp,
+                timestamp:timestamp,
                 amount:bigArray[i-1].amount,
                 sender:bigArray[i-1].sender,
                 sumAmount:bigArray[i-1].sumAmount,
@@ -178,12 +182,12 @@ function fillBigArrayFor4Hours(bigArray){
             sender=[]
         }
         fragment++;
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+hour*(count+1)<bigArray[i].timestamp){
+        timestamp+=hour
+        while(timestamp<nextTimestamp){
             if(fragment%4==3)
             {
                 out.push({
-                    timestamp:(hour*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
+                    timestamp:timestamp,
                     amount:amount,
                     sender:sender,
                     sumAmount:bigArray[i-1].sumAmount,
@@ -192,7 +196,7 @@ function fillBigArrayFor4Hours(bigArray){
                  sender=[]
             }
             fragment++;
-            count++;
+            timestamp+=hour
         }
         
     }

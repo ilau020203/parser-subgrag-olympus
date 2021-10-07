@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js';
 import {getTokens} from './getTokens.js'
+import {getWholePeriodOfTime} from './date.js'
 
 const minute =60;
 
@@ -90,8 +91,10 @@ function fillBigArrayForMinues(bigArray){
     let out = [];
     for(let i=1;i<bigArray.length;i++){
        
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         out.push({
-            timestamp:bigArray[i-1].timestamp,
+            timestamp:timestamp,
             profit:bigArray[i-1].profit,
             amount:bigArray[i-1].amount,
             value:bigArray[i-1].value,
@@ -101,19 +104,19 @@ function fillBigArrayForMinues(bigArray){
             sumAmount:bigArray[i-1].sumAmount,
         });
        
-        let count=1;
-        while(parseInt(bigArray[i-1].timestamp)+minute*(count+1)<bigArray[i].timestamp){
+        timestamp+=minute;
+        while(timestamp<nextTimestamp){
             out.push({
-            timestamp:(minute*(count+1)+parseInt(bigArray[i-1].timestamp)).toString(),
-            profit:0,
-            amount:0,
-            value:0,
-            sender:[],
-            sumValue:bigArray[i-1].sumValue,
-            sumProfit:bigArray[i-1].sumProfit,
-            sumAmount:bigArray[i-1].sumAmount,
+                timestamp:timestamp,
+                profit:0,
+                amount:0,
+                value:0,
+                sender:[],
+                sumValue:bigArray[i-1].sumValue,
+                sumProfit:bigArray[i-1].sumProfit,
+                sumAmount:bigArray[i-1].sumAmount,
             });
-            count++;
+            timestamp+=minute;
         }       
     }
     
