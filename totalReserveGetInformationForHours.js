@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { token } from './config.js';
 
 
 const hour =60*60;
@@ -42,7 +43,7 @@ export async function getTotalReserveBy4Hour(){
 async function getTotalReserveByHoursFromGraph(){
     try{
         const hourData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmS4EPHodzag8wK4m2fZrQYYQrnocX25W9Uf18sz3KPwZc',
+            url: `https://api.thegraph.com/subgraphs/id/${token}`,
             method: 'post',
             data: {
               query: hourQuery

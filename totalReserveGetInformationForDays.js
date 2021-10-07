@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { token } from './config.js';
 
 const day =60*60*24;
 const dayQuery =`
@@ -30,7 +30,7 @@ export async function getTotalReserveByDay(){
 async function getTotalReserveByDaysFromGraph(){
     try{
         const dayData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmS4EPHodzag8wK4m2fZrQYYQrnocX25W9Uf18sz3KPwZc',
+            url: `https://api.thegraph.com/subgraphs/id/${token}`,//QmRpuXnecL1xjHgUUMSBaeok9Ggkpdep9KJNMLJxSbDvxZ
             method: 'post',
             data: {
               query: dayQuery
