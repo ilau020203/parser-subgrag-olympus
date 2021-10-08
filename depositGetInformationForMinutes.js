@@ -121,7 +121,7 @@ function fillBigArrayForMinues(bigArray){
     }
     
     out.push({
-        timestamp:bigArray[bigArray.length-1].timestamp,
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute),
         profit:bigArray[bigArray.length-1].profit,
         amount:bigArray[bigArray.length-1].amount,
         value:bigArray[bigArray.length-1].value,

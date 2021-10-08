@@ -80,7 +80,7 @@ function fillBigArrayForDays(bigArray){
     
     out.push({
         totalReverse:bigArray[bigArray.length-1].finalTotalReserves,
-        timestamp:bigArray[bigArray.length-1].timestamp,////?
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),////?
         audited:bigArray[bigArray.length-1].audited,
     })
     return out;

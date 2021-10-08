@@ -134,7 +134,7 @@ function fillBigArrayForHours(bigArray){
     }
     
     out.push({
-        timestamp:bigArray[bigArray.length-1].timestamp,
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),hour),
         amount:bigArray[bigArray.length-1].amount,
         sender:bigArray[bigArray.length-1].sender,
        
@@ -202,7 +202,7 @@ function fillBigArrayFor4Hours(bigArray){
     }
     
     out.push({
-        timestamp:bigArray[bigArray.length-1].timestamp,
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
         amount:bigArray[bigArray.length-1].amount,
         sender:bigArray[bigArray.length-1].sender,
        
