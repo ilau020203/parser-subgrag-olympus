@@ -1,1 +1,1 @@
-export const token="QmWHweZYQkWRyqD8JoVUr7vxDZ4K9hRs9RwtjPrmwKUHf7"
+export const token="QmaKLG5P7rvnoqwLyaeJyBqagd9tFvtJKs4THpEF1x7vmi"
