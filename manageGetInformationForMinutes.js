@@ -109,7 +109,7 @@ function fillBigArrayForMinues(bigArray){
         });
        
         timestamp+=minute;
-        while(parseInt(bigArray[i-1].timestamp)+minute*(count+1)<bigArray[i].timestamp){
+        while(timestamp<nextTimestamp){
             out.push({
             timestamp:timestamp,
             amount:0,
