@@ -20,7 +20,7 @@ const dayQuery =`
 
 export async function getMintRewardsByDays(){
     try{
-        return fillBigArrayForMinues(reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()))
+        return fillBigArrayForDays(reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()))
     }
     catch(err)
     {
@@ -46,6 +46,11 @@ async function getTotalReserveByDaysFromGraph(){
     }
 }
 
+/**
+ * struct from subgrph reform to array
+ * @param {} days struct from subgrph
+ * @returns 
+ */
 function reformToBigArrayForDays(days){
     let out=[];
     for(let i=0; i<days.length; i++){
@@ -55,7 +60,13 @@ function reformToBigArrayForDays(days){
     }
     return out;
 }
-function fillBigArrayForMinues(bigArray){
+
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
+function fillBigArrayForDays(bigArray){
     let out = [];
    
     for(let i=1;i<bigArray.length;i++){

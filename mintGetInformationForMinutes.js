@@ -25,7 +25,7 @@ const minuteQuery =`
 
 export async function getMintRewardsByMinutes(){
     try{
-        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()))
+        return fillBigArrayForMinutes(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()))
     }
     catch(err)
     {
@@ -64,7 +64,12 @@ function reformToBigArrayForMinutes(days){
     }
     return out;
 }
-function fillBigArrayForMinues(bigArray){
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
+function fillBigArrayForMinutes(bigArray){
     let out = [];
    
     for(let i=1;i<bigArray.length;i++){

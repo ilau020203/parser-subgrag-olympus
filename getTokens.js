@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js';
 
+// graphql request for the Graph
 const query=
 `
 {
@@ -11,7 +12,10 @@ const query=
 `
 
 
-
+/**
+ * 
+ * @returns all using tokens
+ */
 export async function getTokens(){
     try{
         return ( await getTokensFromGraph()).map(function(token){

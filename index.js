@@ -13,38 +13,37 @@ import {getMintRewardsByMinutes} from './mintGetInformationForMinutes.js'
 
 
 
-import { getTokens } from './getTokens.js'
 
 import fs from 'fs'
 
 
 async function main() {
-    
-    // let data = JSON.stringify(await getTotalReserveByMinut());
-    // fs.writeFileSync('resultMinute.json', data);
-    // data = JSON.stringify(await getTotalReserveByHour());
-    // fs.writeFileSync('resultHour.json', data);
-    // data = JSON.stringify(await getTotalReserveByDay());
-    // fs.writeFileSync('resultDay.json', data);
-    // data = JSON.stringify(await getTotalReserveBy4Hour());
-    // fs.writeFileSync('result4Hour.json', data);
-    //  data = JSON.stringify(await getDepositByMinut());
-    // fs.writeFileSync('resultMinuteDeposit.json', data);
-    //  data = JSON.stringify(await getDepositByHour());
-    // fs.writeFileSync('resultHourDeposit.json', data);
-    //  data = JSON.stringify(await getDepositByDay());
-    // fs.writeFileSync('resultDayDeposit.json', data);
-    // data = JSON.stringify(await getDepositBy4Hour());
-    // fs.writeFileSync('result4HourDeposit.json', data);
-    // data = JSON.stringify(await getDepositByMinut());
-    // fs.writeFileSync('resultMinuteManage.json', data);
-    //  data = JSON.stringify(await getManageByHour());
-    // fs.writeFileSync('resultHourManage.json', data);
-    //  data = JSON.stringify(await getManageByDay());
-    // fs.writeFileSync('resultDayManage.json', data);
-    // data = JSON.stringify(await getManageBy4Hour());
-    // fs.writeFileSync('result4HourManage.json', data);
-    let data = JSON.stringify(await getMintRewardsByMinutes());//getMintRewardsByDays
+    //exapmle getting parser array from graphql 
+    let data = JSON.stringify(await getTotalReserveByMinut());
+    fs.writeFileSync('resultMinute.json', data);
+    data = JSON.stringify(await getTotalReserveByHour());
+    fs.writeFileSync('resultHour.json', data);
+    data = JSON.stringify(await getTotalReserveByDay());
+    fs.writeFileSync('resultDay.json', data);
+    data = JSON.stringify(await getTotalReserveBy4Hour());
+    fs.writeFileSync('result4Hour.json', data);
+     data = JSON.stringify(await getDepositByMinut());
+    fs.writeFileSync('resultMinuteDeposit.json', data);
+     data = JSON.stringify(await getDepositByHour());
+    fs.writeFileSync('resultHourDeposit.json', data);
+     data = JSON.stringify(await getDepositByDay());
+    fs.writeFileSync('resultDayDeposit.json', data);
+    data = JSON.stringify(await getDepositBy4Hour());
+    fs.writeFileSync('result4HourDeposit.json', data);
+    data = JSON.stringify(await getManageByMinut());
+    fs.writeFileSync('resultMinuteManage.json', data);
+     data = JSON.stringify(await getManageByHour());
+    fs.writeFileSync('resultHourManage.json', data);
+     data = JSON.stringify(await getManageByDay());
+    fs.writeFileSync('resultDayManage.json', data);
+    data = JSON.stringify(await getManageBy4Hour());
+    fs.writeFileSync('result4HourManage.json', data);
+    data = JSON.stringify(await getMintRewardsByMinutes());
     fs.writeFileSync('resultMintMinute.json', data);
     data = JSON.stringify(await getMintRewardsByHours());
     fs.writeFileSync('resultMintHour.json', data);
@@ -52,10 +51,6 @@ async function main() {
     fs.writeFileSync('resultMintDay.json', data);
     data = JSON.stringify(await getMintRewardsBy4Hours());
     fs.writeFileSync('resultMint4Hour.json', data);
-
-
-    // const data = (await getDepositByMinut())[4].array.slice(-10);
-    // console.log(data);
 }
 
 main();

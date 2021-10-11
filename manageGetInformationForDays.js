@@ -26,7 +26,7 @@ export async function getManageByDay(){
         let bigArray=await reformToBigArrayForDays(await getManageByDaysFromGraph());
         
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForMinues( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForDays( bigArray[i].array);
         }
        
         return bigArray;
@@ -55,6 +55,11 @@ async function getManageByDaysFromGraph(){
     }
 }
 
+/**
+ * struct from subgrph reform to array
+ * @param {} days struct from subgrph
+ * @returns 
+ */
 async function reformToBigArrayForDays(days){
     let out=[];
     let tokens=await getTokens();
@@ -75,7 +80,13 @@ async function reformToBigArrayForDays(days){
     }
     return out;
 }
-function fillBigArrayForMinues(bigArray){
+
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
+function fillBigArrayForDays(bigArray){
     let out = [];
     if(bigArray.length==0){
         return out;

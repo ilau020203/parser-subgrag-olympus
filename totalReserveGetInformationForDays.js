@@ -44,7 +44,11 @@ async function getTotalReserveByDaysFromGraph(){
         console.log(err)
     }
 }
-
+/**
+ * struct from subgrph reform to array
+ * @param {} days struct from subgrph
+ * @returns 
+ */
 function reformToBigArrayForDays(days){
     let out=[];
     for(let i=0; i<days.length; i++){
@@ -54,7 +58,11 @@ function reformToBigArrayForDays(days){
     }
     return out;
 }
-
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
 function fillBigArrayForDays(bigArray){
     
     let out = [];

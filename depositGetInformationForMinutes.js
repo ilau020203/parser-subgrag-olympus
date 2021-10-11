@@ -5,6 +5,7 @@ import {getWholePeriodOfTime} from './date.js'
 
 const minute =60;
 
+// graphql request for the Graph
 const minuteQuery =`
 {
     depositFunctionYearEntities(first:1000 orderBy:timestamp){
@@ -44,7 +45,11 @@ export async function getDepositByMinut(){
     }
 }
 
-
+/**
+ * struct from subgrph reform to array
+ * @param {} days struct from subgrph
+ * @returns 
+ */
 async function getDepositByMinutesFromGraph(){
     try{
         const minuteData = await axios({

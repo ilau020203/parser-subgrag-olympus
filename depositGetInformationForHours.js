@@ -5,6 +5,7 @@ import {getWholePeriodOfTime} from './date.js'
 
 const hour =60*60;
 
+// graphql request for the Graph
 const hourQuery =`
 {
     depositFunctionYearEntities(first:1000 orderBy:timestamp){
@@ -75,6 +76,11 @@ async function getDepositByHoursFromGraph(){
     }
 }
 
+/**
+ * struct from subgrph reform to array
+ * @param {} days struct from subgrph
+ * @returns 
+ */
 async function reformToBigArrayForHour(days){
     let out=[];
     let tokens=await getTokens();
@@ -98,6 +104,12 @@ async function reformToBigArrayForHour(days){
     }
     return out;
 }
+
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
 function fillBigArrayForHours(bigArray){
     let out = [];
     for(let i=1;i<bigArray.length;i++){
@@ -146,7 +158,11 @@ function fillBigArrayForHours(bigArray){
 
 
 
-
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
 function fillBigArrayFor4Hours(bigArray){
 
     let fragment=0;

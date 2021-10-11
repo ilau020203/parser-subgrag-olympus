@@ -72,7 +72,11 @@ async function getManageByHoursFromGraph(){
         console.log(err)
     }
 }
-
+/**
+ * struct from subgrph reform to array
+ * @param {} days struct from subgrph
+ * @returns 
+ */
 async function reformToBigArrayForHour(days){
     let out=[];
     let tokens=await getTokens();
@@ -97,6 +101,14 @@ async function reformToBigArrayForHour(days){
     }
     return out;
 }
+
+
+
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
 function fillBigArrayForHours(bigArray){
     let out = [];
     if(bigArray.length==0){
@@ -146,7 +158,11 @@ function fillBigArrayForHours(bigArray){
 
 
 
-
+/**
+ * fills the array and divides it into equal time intervals
+ * @param {*} bigArray  
+ * @returns 
+ */
 function fillBigArrayFor4Hours(bigArray){
     let fragment=0;
     let amount=0
