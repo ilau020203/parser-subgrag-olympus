@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { token } from './config.js';
-import {getWholePeriodOfTime} from './date.js'
+import { token } from '../config.js';
+import {getWholePeriodOfTime} from '../utils/date.js'
 
 
 const hour =60*60;

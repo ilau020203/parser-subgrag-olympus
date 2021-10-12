@@ -1,37 +1,34 @@
 import axios from 'axios'
-import { token } from './config.js';
-import {getTokens} from './getTokens.js'
-import {getWholePeriodOfTime} from './date.js'
+import { token } from '../config.js';
+import {getWholePeriodOfTime} from '../utils/date.js'
+import {getTokens} from '../tokens/getTokens.js'
 
-const minute =60;
+const day =60*60*24;
 
-const minuteQuery =`
+const dayQuery =`
 {
     manageYearEntities(first:1000 orderBy:timestamp){
      dayManage(first:365 orderBy:timestamp){
-       hourManage(first:24 orderBy:timestamp){
-         minuteManage(first:60 orderBy:timestamp){
-           id
-           amount
-           timestamp
-           sender
-           sumAmount
-         }
-       }
+       
+        id
+        amount
+        timestamp
+        sender
+        sumAmount
+       
      }
    }
-   }
-   
+}
   `
 
-export async function getManageByMinut(){
+export async function getManageByDay(){
     try{
-        let bigArray=await reformToBigArrayForMinutes(await getManageByMinutesFromGraph());
+        let bigArray=await reformToBigArrayForDays(await getManageByDaysFromGraph());
         
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForMinutes( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForDays( bigArray[i].array);
         }
-        
+       
         return bigArray;
     }
     catch(err)
@@ -41,16 +38,16 @@ export async function getManageByMinut(){
 }
 
 
-async function getManageByMinutesFromGraph(){
+async function getManageByDaysFromGraph(){
     try{
-        const minuteData = await axios({
+        const dayData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${token}`,
             method: 'post',
             data: {
-              query: minuteQuery
+              query: dayQuery
             }
           })
-        return minuteData.data.data.manageYearEntities;
+        return dayData.data.data.manageYearEntities;
     }
     catch(err)
     {
@@ -63,7 +60,7 @@ async function getManageByMinutesFromGraph(){
  * @param {} days struct from subgrph
  * @returns 
  */
-async function reformToBigArrayForMinutes(days){
+async function reformToBigArrayForDays(days){
     let out=[];
     let tokens=await getTokens();
     for(let i=0; i<tokens.length; i++){
@@ -72,16 +69,11 @@ async function reformToBigArrayForMinutes(days){
             array:[]
         })
     }
-    
     for(let i=0; i<days.length; i++){
         for(let j=0; j<days[i].dayManage.length; j++){
-            for(let k=0; k<days[i].dayManage[j].hourManage.length; k++){
-                for(let l=0; l<days[i].dayManage[j].hourManage[k].minuteManage.length;l++){
-                    for(let m=0;m<tokens.length;m++){
-                       if(days[i].dayManage[j].hourManage[k].minuteManage[l].id.slice(0,42)==tokens[m]){
-                           out[m].array.push(days[i].dayManage[j].hourManage[k].minuteManage[l]);
-                       }
-                    }
+            for(let m=0;m<tokens.length;m++){
+                if(days[i].dayManage[j].id.slice(0,42)==tokens[m]){
+                    out[m].array.push(days[i].dayManage[j]);
                 }
             }
         }
@@ -94,7 +86,7 @@ async function reformToBigArrayForMinutes(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForMinutes(bigArray){
+function fillBigArrayForDays(bigArray){
     let out = [];
     if(bigArray.length==0){
         return out;
@@ -109,30 +101,29 @@ function fillBigArrayForMinutes(bigArray){
         return out;
     }
     for(let i=1;i<bigArray.length;i++){
-        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
-        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         out.push({
-            
             timestamp:timestamp,
             amount:bigArray[i-1].amount,
             sender:bigArray[i-1].sender,
             sumAmount:bigArray[i-1].sumAmount,
         });
        
-        timestamp+=minute;
+        timestamp+=day
         while(timestamp<nextTimestamp){
             out.push({
-            timestamp:timestamp,
-            amount:0,
-            sender:[],
-            sumAmount:bigArray[i-1].sumAmount,
+                timestamp:timestamp,
+                amount:0,
+                sender:[],
+                sumAmount:bigArray[i-1].sumAmount,
             });
-            timestamp+=minute;
+            timestamp+=day
         }       
     }
     
     out.push({
-        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute),
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),
         amount:bigArray[bigArray.length-1].amount,
         sender:bigArray[bigArray.length-1].sender,
         sumAmount:bigArray[bigArray.length-1].sumAmount,

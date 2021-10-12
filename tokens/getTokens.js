@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { token } from './config.js';
+import { token } from '../config.js';
 
 // graphql request for the Graph
 const query=

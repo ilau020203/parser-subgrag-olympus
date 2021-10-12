@@ -1,30 +1,31 @@
 import axios from 'axios'
-import { token } from './config.js';
-import {getWholePeriodOfTime} from './date.js'
+import { token } from '../config.js';
+import {getWholePeriodOfTime} from '../utils/date.js'
 
 
 const minute =60;
 
 const minuteQuery =`
- {
-  reservesYearsEntities(first: 100 orderBy:timestamp) {
-    reserversDays(first: 365 orderBy:timestamp) {
-      reserversHours(first: 24 orderBy:timestamp) {
-        reserversMinutes(first: 60 orderBy:timestamp) {
-          audited
-          timestamp
-          finalTotalReserves
+{
+    yearRewardsMintedEntities(first:100 orderBy:timestamp){
+      dayMint(first:365 orderBy:timestamp){
+        hourMint(first:24 orderBy:timestamp){
+          minuteMint(first:60 orderBy:timestamp){
+            timestamp
+            amount
+            recipient
+            caller
+          }
         }
       }
     }
   }
-}
 
   `
 
-export async function getTotalReserveByMinut(){
+export async function getMintRewardsByMinutes(){
     try{
-        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()))
+        return fillBigArrayForMinutes(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()))
     }
     catch(err)
     {
@@ -42,7 +43,7 @@ async function getTotalReserveByMinutesFromGraph(){
               query: minuteQuery
             }
           })
-        return minuteData.data.data.reservesYearsEntities;
+        return minuteData.data.data.yearRewardsMintedEntities;
     }
     catch(err)
     {
@@ -50,47 +51,43 @@ async function getTotalReserveByMinutesFromGraph(){
     }
 }
 
-/**
- * struct from subgrph reform to array
- * @param {} days struct from subgrph
- * @returns 
- */
 function reformToBigArrayForMinutes(days){
     let out=[];
     for(let i=0; i<days.length; i++){
-        for(let j=0; j<days[i].reserversDays.length; j++){
-            for(let k=0; k<days[i].reserversDays[j].reserversHours.length; k++){
-                for(let l=0; l<days[i].reserversDays[j].reserversHours[k].reserversMinutes.length;l++){
-                    out.push(days[i].reserversDays[j].reserversHours[k].reserversMinutes[l]);
+        for(let j=0; j<days[i].dayMint.length; j++){
+            for(let k=0; k<days[i].dayMint[j].hourMint.length; k++){
+                for(let l=0; l<days[i].dayMint[j].hourMint[k].minuteMint.length;l++){
+                    out.push(days[i].dayMint[j].hourMint[k].minuteMint[l]);
                 }
             }
         }
     }
     return out;
 }
-
 /**
  * fills the array and divides it into equal time intervals
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForMinues(bigArray){
+function fillBigArrayForMinutes(bigArray){
     let out = [];
    
     for(let i=1;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         out.push({
-            totalReverse:bigArray[i-1].finalTotalReserves,
+            amount:bigArray[i-1].amount,
             timestamp:timestamp,
-            audited:bigArray[i-1].audited,
+            recipient:bigArray[i-1].recipient,
+            caller:bigArray[i-1].caller,
         });
         timestamp+=minute;
         while(timestamp<nextTimestamp){
             out.push({
-                totalReverse:bigArray[i-1].finalTotalReserves,
+                amount:0,
                 timestamp:timestamp,
-                audited:false,
+                recipient:[],
+                caller:[]
             });
             timestamp+=minute;
         }

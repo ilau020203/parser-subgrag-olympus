@@ -1,15 +1,17 @@
 import axios from 'axios'
-import { token } from './config.js';
-import {getTokens} from './getTokens.js'
-import {getWholePeriodOfTime} from './date.js'
+import { token } from '../config.js';
+import {getWholePeriodOfTime} from '../utils/date.js'
+import {getTokens} from '../tokens/getTokens.js'
 
-const day =60*60*24;
+const minute =60;
 
 // graphql request for the Graph
-const dayQuery =`
+const minuteQuery =`
 {
     depositFunctionYearEntities(first:1000 orderBy:timestamp){
      dayDeposit(first:366  orderBy:timestamp){
+       hourDeposit(first:24  orderBy:timestamp){
+           minuteDeposit(first:60  orderBy:timestamp){
            timestamp
            profit
            amount
@@ -19,38 +21,23 @@ const dayQuery =`
            sumProfit
            sumAmount
            id
+         }
+       }
      }
+     
    }
  }
   `
 
-export async function getDepositByDay(){
+export async function getDepositByMinut(){
     try{
-        let bigArray=await reformToBigArrayForDays(await getDepositByDaysFromGraph());
+        let bigArray=await reformToBigArrayForMinutes(await getDepositByMinutesFromGraph());
         
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForDays( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForMinues( bigArray[i].array);
         }
-       
+        
         return bigArray;
-    }
-    catch(err)
-    {
-        console.log(err)
-    }
-}
-
-
-async function getDepositByDaysFromGraph(){
-    try{
-        const dayData = await axios({
-            url: `https://api.thegraph.com/subgraphs/id/${token}`,
-            method: 'post',
-            data: {
-              query: dayQuery
-            }
-          })
-        return dayData.data.data.depositFunctionYearEntities;
     }
     catch(err)
     {
@@ -63,7 +50,24 @@ async function getDepositByDaysFromGraph(){
  * @param {} days struct from subgrph
  * @returns 
  */
-async function reformToBigArrayForDays(days){
+async function getDepositByMinutesFromGraph(){
+    try{
+        const minuteData = await axios({
+            url: `https://api.thegraph.com/subgraphs/id/${token}`,
+            method: 'post',
+            data: {
+              query: minuteQuery
+            }
+          })
+        return minuteData.data.data.depositFunctionYearEntities;
+    }
+    catch(err)
+    {
+        console.log(err)
+    }
+}
+
+async function reformToBigArrayForMinutes(days){
     let out=[];
     let tokens=await getTokens();
     for(let i=0; i<tokens.length; i++){
@@ -75,25 +79,25 @@ async function reformToBigArrayForDays(days){
     
     for(let i=0; i<days.length; i++){
         for(let j=0; j<days[i].dayDeposit.length; j++){
-            for(let m=0;m<tokens.length;m++){
-                if(days[i].dayDeposit[j].id.slice(0,42)==tokens[m]){
-                    out[m].array.push(days[i].dayDeposit[j]);
+            for(let k=0; k<days[i].dayDeposit[j].hourDeposit.length; k++){
+                for(let l=0; l<days[i].dayDeposit[j].hourDeposit[k].minuteDeposit.length;l++){
+                    for(let m=0;m<tokens.length;m++){
+                       if(days[i].dayDeposit[j].hourDeposit[k].minuteDeposit[l].id.slice(0,42)==tokens[m]){
+                           out[m].array.push(days[i].dayDeposit[j].hourDeposit[k].minuteDeposit[l]);
+                       }
+                    }
                 }
             }
         }
     }
     return out;
 }
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray  
- * @returns 
- */
-function fillBigArrayForDays(bigArray){
+function fillBigArrayForMinues(bigArray){
     let out = [];
     for(let i=1;i<bigArray.length;i++){
-        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
-        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
+       
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         out.push({
             timestamp:timestamp,
             profit:bigArray[i-1].profit,
@@ -105,7 +109,7 @@ function fillBigArrayForDays(bigArray){
             sumAmount:bigArray[i-1].sumAmount,
         });
        
-        timestamp+=day;
+        timestamp+=minute;
         while(timestamp<nextTimestamp){
             out.push({
                 timestamp:timestamp,
@@ -117,12 +121,12 @@ function fillBigArrayForDays(bigArray){
                 sumProfit:bigArray[i-1].sumProfit,
                 sumAmount:bigArray[i-1].sumAmount,
             });
-            timestamp+=day;
+            timestamp+=minute;
         }       
     }
     
     out.push({
-        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute),
         profit:bigArray[bigArray.length-1].profit,
         amount:bigArray[bigArray.length-1].amount,
         value:bigArray[bigArray.length-1].value,
