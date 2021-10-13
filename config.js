@@ -1,2 +1,2 @@
 //DEPLOYMENT ID
-export const token="QmUtogyUMKaq82skHCVVRPW5uJmLpMvmyJSfZvE8GoZwJj"
+export const token="Qmei8Tq8QMdnP5tEWH9BCP98szXL98Esqk9xrwSuoA5GNC"

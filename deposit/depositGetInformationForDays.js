@@ -24,12 +24,12 @@ const dayQuery =`
  }
   `
 
-export async function getDepositByDay(){
+export async function getDepositByDay(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForDays(await getDepositByDaysFromGraph());
         
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForDays( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForDays( bigArray[i].array,startTimestamp,endTimestamp);
         }
        
         return bigArray;
@@ -89,11 +89,15 @@ async function reformToBigArrayForDays(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForDays(bigArray){
+function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
     let out = [];
-    for(let i=1;i<bigArray.length;i++){
+    for(let i=j+1;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
+        if (timestamp>endTimestamp) return out;
+
         out.push({
             timestamp:timestamp,
             profit:bigArray[i-1].profit,
@@ -106,6 +110,8 @@ function fillBigArrayForDays(bigArray){
         });
        
         timestamp+=day;
+        if (timestamp>endTimestamp) return out;
+
         while(timestamp<nextTimestamp){
             out.push({
                 timestamp:timestamp,
@@ -118,6 +124,8 @@ function fillBigArrayForDays(bigArray){
                 sumAmount:bigArray[i-1].sumAmount,
             });
             timestamp+=day;
+            if (timestamp>endTimestamp) return out;
+
         }       
     }
     

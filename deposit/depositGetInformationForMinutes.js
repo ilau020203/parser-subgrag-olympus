@@ -29,12 +29,12 @@ const minuteQuery =`
  }
   `
 
-export async function getDepositByMinut(){
+export async function getDepositByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForMinutes(await getDepositByMinutesFromGraph());
         
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForMinues( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForMinues( bigArray[i].array,startTimestamp,endTimestamp);
         }
         
         return bigArray;
@@ -92,12 +92,15 @@ async function reformToBigArrayForMinutes(days){
     }
     return out;
 }
-function fillBigArrayForMinues(bigArray){
+function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
     let out = [];
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j+1;i<bigArray.length;i++){
        
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
+        if (timestamp>endTimestamp) return out;
         out.push({
             timestamp:timestamp,
             profit:bigArray[i-1].profit,
@@ -107,9 +110,11 @@ function fillBigArrayForMinues(bigArray){
             sumValue:bigArray[i-1].sumValue,
             sumProfit:bigArray[i-1].sumProfit,
             sumAmount:bigArray[i-1].sumAmount,
+
         });
        
         timestamp+=minute;
+        if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             out.push({
                 timestamp:timestamp,
@@ -122,6 +127,8 @@ function fillBigArrayForMinues(bigArray){
                 sumAmount:bigArray[i-1].sumAmount,
             });
             timestamp+=minute;
+            if (timestamp>endTimestamp) return out;
+
         }       
     }
     

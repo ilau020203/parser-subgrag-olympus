@@ -19,21 +19,21 @@ const hourQuery =`
 `
 
 
-export async function getTotalReserveByHour(){
+export async function getTotalReserveByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
        
        
-        return fillBigArrayForHours(reformToBigArrayForHours( await getTotalReserveByHoursFromGraph()));
+        return fillBigArrayForHours(reformToBigArrayForHours( await getTotalReserveByHoursFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
         console.log(err)
     }
 }
-export async function getTotalReserveBy4Hour(){
+export async function getTotalReserveBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
 
-        return fillBigArrayFor4Hours(reformToBigArrayForHours( await getTotalReserveByHoursFromGraph()));
+        return fillBigArrayFor4Hours(reformToBigArrayForHours( await getTotalReserveByHoursFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
@@ -79,17 +79,21 @@ function reformToBigArrayForHours(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForHours(bigArray){
+function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let out = [];
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j+1;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
+        if (timestamp>endTimestamp) return out;
         out.push({
             totalReverse:bigArray[i-1].finalTotalReserves,
             timestamp:timestamp,
             audited:bigArray[i-1].audited,
         });
         timestamp+=hour;
+        if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
@@ -97,6 +101,7 @@ function fillBigArrayForHours(bigArray){
                 audited:false,
             });
             timestamp+=hour;
+            if (timestamp>endTimestamp) return out;
         }        
     }
     
@@ -112,17 +117,22 @@ function fillBigArrayForHours(bigArray){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayFor4Hours(bigArray){
+function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let out = [];
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j+1;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
+        if (timestamp>endTimestamp) return out;
         out.push({
             totalReverse:bigArray[i-1].finalTotalReserves,
             timestamp:timestamp,
             audited:bigArray[i-1].audited,
         });
         timestamp+=4*hour;
+        if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
@@ -130,6 +140,7 @@ function fillBigArrayFor4Hours(bigArray){
                 audited:false,
             });
             timestamp+=4*hour;
+            if (timestamp>endTimestamp) return out;
         }        
     }
     

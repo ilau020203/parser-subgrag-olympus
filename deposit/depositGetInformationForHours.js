@@ -27,12 +27,12 @@ const hourQuery =`
  }
   `
 
-export async function getDepositByHour(){
+export async function getDepositByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForHour(await getDepositByHoursFromGraph());
      
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForHours( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForHours( bigArray[i].array,startTimestamp,endTimestamp);
         }
         
         return bigArray;
@@ -43,12 +43,12 @@ export async function getDepositByHour(){
     }
 }
 
-export async function getDepositBy4Hour(){
+export async function getDepositBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForHour(await getDepositByHoursFromGraph());
      
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayFor4Hours( bigArray[i].array);
+            bigArray[i].array=fillBigArrayFor4Hours( bigArray[i].array,startTimestamp,endTimestamp);
         }
         
         return bigArray;
@@ -110,9 +110,11 @@ async function reformToBigArrayForHour(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForHours(bigArray){
+function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let out = [];
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j+1;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         out.push({
@@ -163,7 +165,7 @@ function fillBigArrayForHours(bigArray){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayFor4Hours(bigArray){
+function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
 
     let fragment=0;
     let profit=0
@@ -171,10 +173,13 @@ function fillBigArrayFor4Hours(bigArray){
     let value=0
     let sender=[]
     let out = [];
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j+1;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
          profit+=bigArray[i-1].profit
+        if (timestamp>endTimestamp) return out;
          amount+=bigArray[i-1].amount
          value+=bigArray[i-1].value
          sender=sender.concat(bigArray[i-1].sender)
@@ -197,6 +202,7 @@ function fillBigArrayFor4Hours(bigArray){
         }
         fragment++;
         timestamp+=hour;
+        if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             if(fragment%4==3)
             {
@@ -217,6 +223,8 @@ function fillBigArrayFor4Hours(bigArray){
             }
             fragment++;
             timestamp+=hour;
+        if (timestamp>endTimestamp) return out;
+
         }
         
     }

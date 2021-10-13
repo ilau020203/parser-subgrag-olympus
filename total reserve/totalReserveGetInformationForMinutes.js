@@ -22,9 +22,9 @@ const minuteQuery =`
 
   `
 
-export async function getTotalReserveByMinut(){
+export async function getTotalReserveByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
-        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()))
+        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()),startTimestamp,endTimestamp)
     }
     catch(err)
     {
@@ -74,18 +74,22 @@ function reformToBigArrayForMinutes(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForMinues(bigArray){
+function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
     let out = [];
-   
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j+1;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
+        if (timestamp>endTimestamp) return out;
         out.push({
             totalReverse:bigArray[i-1].finalTotalReserves,
             timestamp:timestamp,
             audited:bigArray[i-1].audited,
         });
         timestamp+=minute;
+        if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
@@ -93,6 +97,7 @@ function fillBigArrayForMinues(bigArray){
                 audited:false,
             });
             timestamp+=minute;
+            if (timestamp>endTimestamp) return out;
         }
         
     }
