@@ -134,28 +134,39 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
 function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
-
     while(bigArray[j].timestamp<startTimestamp) j++;
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
         if (timestamp>endTimestamp) return out;
         if(timestamp>=startTimestamp){
-            out.push({
-                totalReserves:bigArray[i-1].finalTotalReserves,
-                timestamp:timestamp,
-                audited:bigArray[i-1].audited,
-            });
+            if(out.length!=0&&out[out.length-1].timestamp==timestamp){
+                out[out.length-1].audited= out[out.length-1].audited?true:bigArray[i-1].audited;
+                out[out.length-1].totalReserves=bigArray[i-1].finalTotalReserves;
+            }
+            else{
+                out.push({
+                    totalReserves:bigArray[i-1].finalTotalReserves,
+                    timestamp:timestamp,
+                    audited:bigArray[i-1].audited,
+                });
+            }
         }
         timestamp+=4*hour;
         if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             if(timestamp>=startTimestamp){
-                out.push({
-                    totalReserves:bigArray[i-1].finalTotalReserves,
-                    timestamp:timestamp,
-                    audited:false,
-                });
+                if(out.length!=0&&out[out.length-1].timestamp==timestamp){
+                    out[out.length-1].audited= out[out.length-1].audited?true:bigArray[i-1].audited;
+                    out[out.length-1].totalReserves=bigArray[i-1].finalTotalReserves;
+                }
+                else{
+                    out.push({
+                        totalReserves:bigArray[i-1].finalTotalReserves,
+                        timestamp:timestamp,
+                        audited:false,
+                    });
+                }
             }
             timestamp+=4*hour;
             if (timestamp>endTimestamp) return out;
