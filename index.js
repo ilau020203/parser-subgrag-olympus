@@ -27,7 +27,7 @@ async function main() {
     fs.writeFileSync('resultMinute.json', data);
     data = JSON.stringify(await getTotalReserveByHour(1633392000,1633996800));
     fs.writeFileSync('resultHour.json', data);
-    data = JSON.stringify(await getTotalReserveByDay(1633392001,1633996801));
+    data = JSON.stringify(await getTotalReserveByDay(1633392000));
     fs.writeFileSync('resultDay.json', data);
     data = JSON.stringify(await getTotalReserveBy4Hour(1633392000,1633996800));
     fs.writeFileSync('result4Hour.json', data);
