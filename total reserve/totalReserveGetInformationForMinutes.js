@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
 import { token } from '../config.js';
-import {getWholePeriodOfTime} from '../utils/date.js'
+import { getWholePeriodOfTime } from '../utils/date.js';
 
 
 const minute =60;
@@ -105,10 +105,21 @@ function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
         }
         
     }
+
     out.push({
         totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute),
         audited:bigArray[bigArray.length-1].audited,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute);
+    timestamp+=minute;
+    while(timestamp<=endTimestamp){
+        out.push({
+            totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+            timestamp:timestamp,
+            audited:false,
+        });
+        timestamp+=minute;
+    }
     return out;
 }

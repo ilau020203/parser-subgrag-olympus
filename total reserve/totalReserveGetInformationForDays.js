@@ -101,5 +101,15 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),////?
         audited:bigArray[bigArray.length-1].audited,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day);
+    timestamp+=day;
+    while(timestamp<=endTimestamp){
+        out.push({
+            totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+            timestamp:timestamp,
+            audited:false,
+        });
+        timestamp+=day;
+    }
     return out;
 }

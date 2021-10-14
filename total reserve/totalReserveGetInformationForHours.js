@@ -114,6 +114,16 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),hour),
         audited:bigArray[bigArray.length-1].audited,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),hour);
+    timestamp+=hour;
+    while(timestamp<=endTimestamp){
+        out.push({
+            totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+            timestamp:timestamp,
+            audited:false,
+        });
+        timestamp+=hour;
+    }
     return out;
 }
 /**
@@ -157,5 +167,15 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
         audited:bigArray[bigArray.length-1].audited,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
+    timestamp+=4*hour;
+    while(timestamp<=endTimestamp){
+        out.push({
+            totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+            timestamp:timestamp,
+            audited:false,
+        });
+        timestamp+=4*hour;
+    }
     return out;
 }
