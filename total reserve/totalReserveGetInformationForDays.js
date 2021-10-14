@@ -74,7 +74,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
         if (timestamp>endTimestamp) return out;
         if(timestamp>=startTimestamp){
             out.push({
-                totalReverse:bigArray[i-1].finalTotalReserves,
+                totalReserves:bigArray[i-1].finalTotalReserves,
                 timestamp:timestamp,
                 audited:bigArray[i-1].audited,
             });
@@ -84,7 +84,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
         while(timestamp<nextTimestamp){
             if(timestamp>=startTimestamp){
                 out.push({
-                    totalReverse:bigArray[i-1].finalTotalReserves,
+                    totalReserves:bigArray[i-1].finalTotalReserves,
                     timestamp:timestamp,
                     audited:false,
                 });
@@ -97,7 +97,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     }
     
     out.push({
-        totalReverse:bigArray[bigArray.length-1].finalTotalReserves,
+        totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),////?
         audited:bigArray[bigArray.length-1].audited,
     })

@@ -91,9 +91,11 @@ function fillBigArrayForDays(bigArray){
     if(bigArray.length==0){
         return out;
     }
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
     if(bigArray.length==1){
         out.push({
-            timestamp:bigArray[0].timestamp,
+            timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),
             amount:bigArray[0].amount,
             sender:bigArray[0].sender,
             sumAmount:bigArray[0].sumAmount,

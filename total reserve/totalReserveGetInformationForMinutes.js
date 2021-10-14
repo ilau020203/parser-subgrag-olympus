@@ -85,7 +85,7 @@ function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
         if (timestamp>endTimestamp) return out;
         if(timestamp>=startTimestamp){
             out.push({
-                totalReverse:bigArray[i-1].finalTotalReserves,
+                totalReserves:bigArray[i-1].finalTotalReserves,
                 timestamp:timestamp,
                 audited:bigArray[i-1].audited,
             });
@@ -95,7 +95,7 @@ function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
         while(timestamp<nextTimestamp){
             if(timestamp>=startTimestamp){
             out.push({
-                    totalReverse:bigArray[i-1].finalTotalReserves,
+                    totalReserves:bigArray[i-1].finalTotalReserves,
                     timestamp:timestamp,
                     audited:false,
                 });
@@ -106,7 +106,7 @@ function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
         
     }
     out.push({
-        totalReverse:bigArray[bigArray.length-1].finalTotalReserves,
+        totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute),
         audited:bigArray[bigArray.length-1].audited,
     })
