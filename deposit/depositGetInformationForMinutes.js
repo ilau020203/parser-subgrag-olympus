@@ -101,18 +101,19 @@ function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         if (timestamp>endTimestamp) return out;
-        out.push({
-            timestamp:timestamp,
-            profit:bigArray[i-1].profit,
-            amount:bigArray[i-1].amount,
-            value:bigArray[i-1].value,
-            sender:bigArray[i-1].sender,
-            sumValue:bigArray[i-1].sumValue,
-            sumProfit:bigArray[i-1].sumProfit,
-            sumAmount:bigArray[i-1].sumAmount,
+        if(timestamp>=startTimestamp){
+            out.push({
+                timestamp:timestamp,
+                profit:bigArray[i-1].profit,
+                amount:bigArray[i-1].amount,
+                value:bigArray[i-1].value,
+                sender:bigArray[i-1].sender,
+                sumValue:bigArray[i-1].sumValue,
+                sumProfit:bigArray[i-1].sumProfit,
+                sumAmount:bigArray[i-1].sumAmount,
 
-        });
-       
+            });
+        }
         timestamp+=minute;
         if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){

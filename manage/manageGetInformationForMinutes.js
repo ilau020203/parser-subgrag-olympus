@@ -25,12 +25,12 @@ const minuteQuery =`
    
   `
 
-export async function getManageByMinut(){
+export async function getManageByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForMinutes(await getManageByMinutesFromGraph());
         
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForMinutes( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForMinutes( bigArray[i].array,startTimestamp,endTimestamp);
         }
         
         return bigArray;
@@ -95,8 +95,10 @@ async function reformToBigArrayForMinutes(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForMinutes(bigArray){
+function fillBigArrayForMinutes(bigArray,startTimestamp,endTimestamp){
     let out = [];
+    let j=0;
+    
     if(bigArray.length==0){
         return out;
     }
@@ -109,25 +111,45 @@ function fillBigArrayForMinutes(bigArray){
         });
         return out;
     }
-    for(let i=1;i<bigArray.length;i++){
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,minute);
+        timestamp+=minute;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                amount:0,
+                sender:[],
+                sumAmount:bigArray[bigArray.length-1].sumAmount,
+            });
+            timestamp+=minute;
+        }
+        return out;
+    }
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
-        out.push({
-            
-            timestamp:timestamp,
-            amount:bigArray[i-1].amount,
-            sender:bigArray[i-1].sender,
-            sumAmount:bigArray[i-1].sumAmount,
-        });
-       
+        if (timestamp>endTimestamp) return out;
+        if(timestamp>=startTimestamp){
+            out.push({
+                
+                timestamp:timestamp,
+                amount:bigArray[i-1].amount,
+                sender:bigArray[i-1].sender,
+                sumAmount:bigArray[i-1].sumAmount,
+            });
+        }
         timestamp+=minute;
         while(timestamp<nextTimestamp){
-            out.push({
-            timestamp:timestamp,
-            amount:0,
-            sender:[],
-            sumAmount:bigArray[i-1].sumAmount,
-            });
+            if (timestamp>endTimestamp) return out;
+                if(timestamp>=startTimestamp){
+                out.push({
+                timestamp:timestamp,
+                amount:0,
+                sender:[],
+                sumAmount:bigArray[i-1].sumAmount,
+                });
+            }
             timestamp+=minute;
         }       
     }
@@ -138,5 +160,16 @@ function fillBigArrayForMinutes(bigArray){
         sender:bigArray[bigArray.length-1].sender,
         sumAmount:bigArray[bigArray.length-1].sumAmount,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute);
+    timestamp+=minute;
+    while(timestamp<=endTimestamp){
+        out.push({
+            timestamp:timestamp,
+            amount:0,
+            sender:[],
+            sumAmount:bigArray[bigArray.length-1].sumAmount,
+        });
+        timestamp+=minute;
+    }
     return out;
 }

@@ -23,9 +23,9 @@ const minuteQuery =`
 
   `
 
-export async function getMintRewardsByMinutes(){
+export async function getMintRewardsByMinutes(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
-        return fillBigArrayForMinutes(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()))
+        return fillBigArrayForMinutes(reformToBigArrayForMinutes(await getTotalReserveByMinutesFromGraph()),startTimestamp,endTimestamp)
     }
     catch(err)
     {
@@ -69,10 +69,11 @@ function reformToBigArrayForMinutes(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForMinutes(bigArray){
+function fillBigArrayForMinutes(bigArray,startTimestamp,endTimestamp){
     let out = [];
-   
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         out.push({
@@ -94,9 +95,24 @@ function fillBigArrayForMinutes(bigArray){
         
     }
     out.push({
-        totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+      
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute),
-        audited:bigArray[bigArray.length-1].audited,
+        amount:bigArray[bigArray.length-1].amount,
+        recipient:bigArray[bigArray.length-1].recipient,
+        caller:bigArray[bigArray.length-1].caller,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),minute);
+    timestamp+=minute;
+    while(timestamp<=endTimestamp){
+        out.push({
+            timestamp:timestamp,
+            amount:0,
+            timestamp:timestamp,
+            recipient:[],
+            caller:[]
+        });
+        timestamp+=minute;
+    }
+
     return out;
 }

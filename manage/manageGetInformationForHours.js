@@ -23,12 +23,12 @@ const hourQuery =`
 }
   `
 
-export async function getManageByHour(){
+export async function getManageByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForHour(await getManageByHoursFromGraph());
      
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayForHours( bigArray[i].array);
+            bigArray[i].array=fillBigArrayForHours( bigArray[i].array,startTimestamp,endTimestamp);
         }
         
         return bigArray;
@@ -39,12 +39,12 @@ export async function getManageByHour(){
     }
 }
 
-export async function getManageBy4Hour(){
+export async function getManageBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
         let bigArray=await reformToBigArrayForHour(await getManageByHoursFromGraph());
      
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayFor4Hours( bigArray[i].array);
+            bigArray[i].array=fillBigArrayFor4Hours( bigArray[i].array,startTimestamp,endTimestamp);
         }
         
         return bigArray;
@@ -109,8 +109,9 @@ async function reformToBigArrayForHour(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForHours(bigArray){
+function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let out = [];
+    let j=0;
     if(bigArray.length==0){
         return out;
     }
@@ -123,24 +124,44 @@ function fillBigArrayForHours(bigArray){
         });
        return out;
     }
-    for(let i=1;i<bigArray.length;i++){
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,hour);
+        timestamp+=hour;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                amount:0,
+                sender:[],
+                sumAmount:bigArray[bigArray.length-1].sumAmount,
+            });
+            timestamp+=hour;
+        }
+        return out;
+    }
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
-        out.push({
-            timestamp:timestamp,
-            amount:bigArray[i-1].amount,
-            sender:bigArray[i-1].sender,
-            sumAmount:bigArray[i-1].sumAmount,
-        });
-       
+        if (timestamp>endTimestamp) return out;
+        if(timestamp>=startTimestamp){
+            out.push({
+                timestamp:timestamp,
+                amount:bigArray[i-1].amount,
+                sender:bigArray[i-1].sender,
+                sumAmount:bigArray[i-1].sumAmount,
+            });
+        }
         timestamp+=hour
         while(timestamp<nextTimestamp){
-            out.push({
-            timestamp:timestamp,
-            amount:0,
-            sender:[],
-            sumAmount:bigArray[i-1].sumAmount,
-            });
+            if (timestamp>endTimestamp) return out;
+            if(timestamp>=startTimestamp){
+                out.push({
+                timestamp:timestamp,
+                amount:0,
+                sender:[],
+                sumAmount:bigArray[i-1].sumAmount,
+                });
+            }
             timestamp+=hour
         }       
     }
@@ -152,6 +173,17 @@ function fillBigArrayForHours(bigArray){
        
         sumAmount:bigArray[bigArray.length-1].sumAmount,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),hour);
+    timestamp+=hour;
+    while(timestamp<=endTimestamp){
+        out.push({
+            timestamp:timestamp,
+            amount:0,
+            sender:[],
+            sumAmount:bigArray[bigArray.length-1].sumAmount,
+        });
+        timestamp+=hour;
+    }
     return out;
 }
 
@@ -163,11 +195,13 @@ function fillBigArrayForHours(bigArray){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayFor4Hours(bigArray){
+function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let fragment=0;
     let amount=0
     let sender=[]
     let out = [];
+    let j=0;
+    
     if(bigArray.length==0){
         return out;
     }
@@ -181,35 +215,56 @@ function fillBigArrayFor4Hours(bigArray){
         });
         return out;
     }
-    for(let i=1;i<bigArray.length;i++){
-        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
-        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
-         amount+=bigArray[i-1].amount
-         sender=sender.concat(bigArray[i-1].sender)
-        if(fragment%4==3)
-        {
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
+        timestamp+=4*hour;
+        while(timestamp<=endTimestamp){
             out.push({
                 timestamp:timestamp,
-                amount:bigArray[i-1].amount,
-                sender:bigArray[i-1].sender,
-                sumAmount:bigArray[i-1].sumAmount,
+                amount:0,
+                sender:[],
+                sumAmount:bigArray[bigArray.length-1].sumAmount,
             });
-            amount=0
-            sender=[]
+            timestamp+=4*hour;
         }
-        fragment++;
-        timestamp+=hour
-        while(timestamp<nextTimestamp){
+        return out;
+    }
+    for(let i=j==0?1:j;i<bigArray.length;i++){
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
+        amount+=bigArray[i-1].amount
+        sender=sender.concat(bigArray[i-1].sender)
+        if (timestamp>endTimestamp) return out;
+        if(timestamp>=startTimestamp){
             if(fragment%4==3)
             {
                 out.push({
                     timestamp:timestamp,
-                    amount:amount,
-                    sender:sender,
+                    amount:bigArray[i-1].amount,
+                    sender:bigArray[i-1].sender,
                     sumAmount:bigArray[i-1].sumAmount,
                 });
-                 amount=0
-                 sender=[]
+                amount=0
+                sender=[]
+            }
+        }
+        fragment++;
+        timestamp+=hour
+        while(timestamp<nextTimestamp){
+            if (timestamp>endTimestamp) return out;
+            if(timestamp>=startTimestamp){
+                if(fragment%4==3)
+                {
+                    out.push({
+                        timestamp:timestamp,
+                        amount:amount,
+                        sender:sender,
+                        sumAmount:bigArray[i-1].sumAmount,
+                    });
+                    amount=0
+                    sender=[]
+                }
             }
             fragment++;
             timestamp+=hour
@@ -224,5 +279,16 @@ function fillBigArrayFor4Hours(bigArray){
        
         sumAmount:bigArray[bigArray.length-1].sumAmount,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
+    timestamp+=4*hour;
+    while(timestamp<=endTimestamp){
+        out.push({
+            timestamp:timestamp,
+            amount:0,
+            sender:[],
+            sumAmount:bigArray[bigArray.length-1].sumAmount,
+        });
+        timestamp+=4*hour;
+    }
     return out;
 }

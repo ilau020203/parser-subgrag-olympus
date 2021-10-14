@@ -18,9 +18,9 @@ const dayQuery =`
   }
   `
 
-export async function getMintRewardsByDays(){
+export async function getMintRewardsByDays(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
-        return fillBigArrayForDays(reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()))
+        return fillBigArrayForDays(reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()),startTimestamp,endTimestamp)
     }
     catch(err)
     {
@@ -66,34 +66,55 @@ function reformToBigArrayForDays(days){
  * @param {*} bigArray  
  * @returns 
  */
-function fillBigArrayForDays(bigArray){
+function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     let out = [];
-   
-    for(let i=1;i<bigArray.length;i++){
+    let j=0;
+    while(bigArray[j].timestamp<startTimestamp) j++;
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
-        out.push({
-            amount:bigArray[i-1].amount,
-            timestamp:timestamp,
-            recipient:bigArray[i-1].recipient,
-            caller:bigArray[i-1].caller,
-        });
+        if (timestamp>endTimestamp) return out;
+        if(timestamp>=startTimestamp){
+            out.push({
+                amount:bigArray[i-1].amount,
+                timestamp:timestamp,
+                recipient:bigArray[i-1].recipient,
+                caller:bigArray[i-1].caller,
+            });
+        }
         timestamp+=day;
         while(timestamp<nextTimestamp){
-            out.push({
-                amount:0,
-                timestamp:timestamp,
-                recipient:[],
-                caller:[]
-            });
+            if (timestamp>endTimestamp) return out;
+            if(timestamp>=startTimestamp){
+                out.push({
+                    amount:0,
+                    timestamp:timestamp,
+                    recipient:[],
+                    caller:[]
+                });
+            }
             timestamp+=day;
         }
         
     }
     out.push({
-        totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+      
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),
-        audited:bigArray[bigArray.length-1].audited,
+        amount:bigArray[bigArray.length-1].amount,
+        recipient:bigArray[bigArray.length-1].recipient,
+        caller:bigArray[bigArray.length-1].caller,
     })
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day);
+    timestamp+=day;
+    while(timestamp<=endTimestamp){
+        out.push({
+            timestamp:timestamp,
+            amount:0,
+            timestamp:timestamp,
+            recipient:[],
+            caller:[]
+        });
+        timestamp+=day;
+    }
     return out;
 }
