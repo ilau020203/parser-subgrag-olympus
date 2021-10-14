@@ -93,36 +93,38 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     let j=0;
     while(bigArray[j].timestamp<startTimestamp) j++;
     let out = [];
-    for(let i=j+1;i<bigArray.length;i++){
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         if (timestamp>endTimestamp) return out;
-
-        out.push({
-            timestamp:timestamp,
-            profit:bigArray[i-1].profit,
-            amount:bigArray[i-1].amount,
-            value:bigArray[i-1].value,
-            sender:bigArray[i-1].sender,
-            sumValue:bigArray[i-1].sumValue,
-            sumProfit:bigArray[i-1].sumProfit,
-            sumAmount:bigArray[i-1].sumAmount,
-        });
-       
-        timestamp+=day;
-        if (timestamp>endTimestamp) return out;
-
-        while(timestamp<nextTimestamp){
+        if(timestamp>=startTimestamp){
             out.push({
                 timestamp:timestamp,
-                profit:0,
-                amount:0,
-                value:0,
-                sender:[],
+                profit:bigArray[i-1].profit,
+                amount:bigArray[i-1].amount,
+                value:bigArray[i-1].value,
+                sender:bigArray[i-1].sender,
                 sumValue:bigArray[i-1].sumValue,
                 sumProfit:bigArray[i-1].sumProfit,
                 sumAmount:bigArray[i-1].sumAmount,
             });
+        }
+        timestamp+=day;
+        if (timestamp>endTimestamp) return out;
+
+        while(timestamp<nextTimestamp){
+            if(timestamp>=startTimestamp){
+                out.push({
+                    timestamp:timestamp,
+                    profit:0,
+                    amount:0,
+                    value:0,
+                    sender:[],
+                    sumValue:bigArray[i-1].sumValue,
+                    sumProfit:bigArray[i-1].sumProfit,
+                    sumAmount:bigArray[i-1].sumAmount,
+                });
+            }
             timestamp+=day;
             if (timestamp>endTimestamp) return out;
 

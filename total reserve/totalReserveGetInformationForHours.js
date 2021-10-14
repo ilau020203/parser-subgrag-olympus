@@ -83,23 +83,27 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
     while(bigArray[j].timestamp<startTimestamp) j++;
-    for(let i=j+1;i<bigArray.length;i++){
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
         if (timestamp>endTimestamp) return out;
-        out.push({
-            totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:timestamp,
-            audited:bigArray[i-1].audited,
-        });
-        timestamp+=hour;
-        if (timestamp>endTimestamp) return out;
-        while(timestamp<nextTimestamp){
+        if(timestamp>=startTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
                 timestamp:timestamp,
-                audited:false,
+                audited:bigArray[i-1].audited,
             });
+        }
+        timestamp+=hour;
+        if (timestamp>endTimestamp) return out;
+        while(timestamp<nextTimestamp){
+            if(timestamp>=startTimestamp){
+                out.push({
+                    totalReverse:bigArray[i-1].finalTotalReserves,
+                    timestamp:timestamp,
+                    audited:false,
+                });
+            }
             timestamp+=hour;
             if (timestamp>endTimestamp) return out;
         }        
@@ -122,23 +126,27 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let j=0;
 
     while(bigArray[j].timestamp<startTimestamp) j++;
-    for(let i=j+1;i<bigArray.length;i++){
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
         if (timestamp>endTimestamp) return out;
-        out.push({
-            totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:timestamp,
-            audited:bigArray[i-1].audited,
-        });
-        timestamp+=4*hour;
-        if (timestamp>endTimestamp) return out;
-        while(timestamp<nextTimestamp){
+        if(timestamp>=startTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
                 timestamp:timestamp,
-                audited:false,
+                audited:bigArray[i-1].audited,
             });
+        }
+        timestamp+=4*hour;
+        if (timestamp>endTimestamp) return out;
+        while(timestamp<nextTimestamp){
+            if(timestamp>=startTimestamp){
+                out.push({
+                    totalReverse:bigArray[i-1].finalTotalReserves,
+                    timestamp:timestamp,
+                    audited:false,
+                });
+            }
             timestamp+=4*hour;
             if (timestamp>endTimestamp) return out;
         }        

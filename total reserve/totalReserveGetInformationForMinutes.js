@@ -79,23 +79,27 @@ function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
     let j=0;
 
     while(bigArray[j].timestamp<startTimestamp) j++;
-    for(let i=j+1;i<bigArray.length;i++){
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
         if (timestamp>endTimestamp) return out;
-        out.push({
-            totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:timestamp,
-            audited:bigArray[i-1].audited,
-        });
-        timestamp+=minute;
-        if (timestamp>endTimestamp) return out;
-        while(timestamp<nextTimestamp){
+        if(timestamp>=startTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
                 timestamp:timestamp,
-                audited:false,
+                audited:bigArray[i-1].audited,
             });
+        }
+        timestamp+=minute;
+        if (timestamp>endTimestamp) return out;
+        while(timestamp<nextTimestamp){
+            if(timestamp>=startTimestamp){
+            out.push({
+                    totalReverse:bigArray[i-1].finalTotalReserves,
+                    timestamp:timestamp,
+                    audited:false,
+                });
+            }
             timestamp+=minute;
             if (timestamp>endTimestamp) return out;
         }

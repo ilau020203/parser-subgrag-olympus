@@ -68,23 +68,28 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
 
 
     let out = [];
-    for(let i=j+1;i<bigArray.length;i++){
+    for(let i=j==0?1:j;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),day)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),day)
         if (timestamp>endTimestamp) return out;
-        out.push({
-            totalReverse:bigArray[i-1].finalTotalReserves,
-            timestamp:timestamp,
-            audited:bigArray[i-1].audited,
-        });
-        timestamp+=day;
-        if (timestamp>endTimestamp) return out;
-        while(timestamp<nextTimestamp){
+        if(timestamp>=startTimestamp){
             out.push({
                 totalReverse:bigArray[i-1].finalTotalReserves,
                 timestamp:timestamp,
-                audited:false,
+                audited:bigArray[i-1].audited,
             });
+        }
+        timestamp+=day;
+        if (timestamp>endTimestamp) return out;
+        while(timestamp<nextTimestamp){
+            if(timestamp>=startTimestamp){
+                out.push({
+                    totalReverse:bigArray[i-1].finalTotalReserves,
+                    timestamp:timestamp,
+                    audited:false,
+                });
+            }
+
             timestamp+=day;
         if (timestamp>endTimestamp) return out;
         }

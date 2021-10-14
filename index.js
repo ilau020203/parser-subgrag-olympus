@@ -23,22 +23,22 @@ async function main() {
     // fs.writeFileSync('resultBalanceDay.json', data);
 
 
-    let data = JSON.stringify(await getTotalReserveByMinut());
+    let data = JSON.stringify(await getTotalReserveByMinut(1633392000,1633996800));
     fs.writeFileSync('resultMinute.json', data);
     data = JSON.stringify(await getTotalReserveByHour(1633392000,1633996800));
     fs.writeFileSync('resultHour.json', data);
-    data = JSON.stringify(await getTotalReserveByDay(1633392000,1633996800));
+    data = JSON.stringify(await getTotalReserveByDay(1633392001,1633996801));
     fs.writeFileSync('resultDay.json', data);
     data = JSON.stringify(await getTotalReserveBy4Hour(1633392000,1633996800));
     fs.writeFileSync('result4Hour.json', data);
      data = JSON.stringify(await getDepositByMinut(1633392000,1633996800));
     fs.writeFileSync('resultMinuteDeposit.json', data);
-    //  data = JSON.stringify(await getDepositByHour(1633392000,1633996800));
-    // fs.writeFileSync('resultHourDeposit.json', data);
-    //  data = JSON.stringify(await getDepositByDay());
-    // fs.writeFileSync('resultDayDeposit.json', data);
-    // data = JSON.stringify(await getDepositBy4Hour());
-    // fs.writeFileSync('result4HourDeposit.json', data);
+     data = JSON.stringify(await getDepositByHour(1633392000,1633996800));
+    fs.writeFileSync('resultHourDeposit.json', data);
+     data = JSON.stringify(await getDepositByDay(1633392000,1633996800));
+    fs.writeFileSync('resultDayDeposit.json', data);
+    data = JSON.stringify(await getDepositBy4Hour(1633392000,1633996800));
+    fs.writeFileSync('result4HourDeposit.json', data);
     // data = JSON.stringify(await getManageByMinut());
     // fs.writeFileSync('resultMinuteManage.json', data);
     //  data = JSON.stringify(await getManageByHour());
