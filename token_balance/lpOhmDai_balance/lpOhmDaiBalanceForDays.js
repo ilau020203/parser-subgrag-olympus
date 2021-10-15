@@ -16,9 +16,9 @@ const dayQuery =`
 `
 
 
-export async function getSUSHIBalanceByDay(startTimestamp=0,endTimestamp=Date.now()/1000) {
+export async function getlpOhmDaiBalanceByDay(startTimestamp=0,endTimestamp=Date.now()/1000) {
     try{
-        return fillBigArrayForDays(reformToBigArrayForDays( await getSUSHIBalanceByDaysFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayForDays(reformToBigArrayForDays( await getlpOhmDaiIBalanceByDaysFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
@@ -26,7 +26,7 @@ export async function getSUSHIBalanceByDay(startTimestamp=0,endTimestamp=Date.no
     }
 }
 
-async function getSUSHIBalanceByDaysFromGraph(){
+async function getlpOhmDaiIBalanceByDaysFromGraph(){
     try{
         const dayData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,//QmRpuXnecL1xjHgUUMSBaeok9Ggkpdep9KJNMLJxSbDvxZ

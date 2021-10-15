@@ -19,12 +19,12 @@ import {getFRAXBalanceByMinut} from './token_balance/frax_balance/fraxBalanceFor
 import {getLUSDBalanceByDay} from './token_balance/lusd_balance/lusdBalanceForDays.js'
 import {getLUSDBalanceByHour,getLUSDBalanceBy4Hour} from './token_balance/lusd_balance/lusdBalanceForHours.js'
 import {getLUSDBalanceByMinut} from './token_balance/lusd_balance/lusdBalanceForMinutes.js'
-import {getSUSHIBalanceByDay} from './token_balance/sushi_balance/sushiBalanceForDays.js'
-import {getSUSHIBalanceByHour,getSUSHIBalanceBy4Hour} from './token_balance/sushi_balance/sushiBalanceForHours.js'
-import {getSUSHIBalanceByMinut} from './token_balance/sushi_balance/sushiBalanceForMinutes.js'
-import {getUNIV2BalanceByDay} from './token_balance/uni_v2_balance/univ2BalanceForDays.js'
-import {getUNIV2BalanceByHour,getUNIV2BalanceBy4Hour} from './token_balance/uni_v2_balance/univ2BalanceForHours.js'
-import {getUNIV2BalanceByMinut} from './token_balance/uni_v2_balance/univ2BalanceForMinutes.js'
+import {getlpOhmDaiBalanceByDay} from './token_balance/lpOhmDai_balance/lpOhmDaiBalanceForDays.js'
+import {getlpOhmDaiBalanceByHour,getlpOhmDaiBalanceBy4Hour} from './token_balance/lpOhmDai_balance/lpOhmDaiBalanceForHours.js'
+import {getlpOhmDaiBalanceByMinut} from './token_balance/lpOhmDai_balance/lpOhmDaiBalanceForMinutes.js'
+import {getlpOhmLusdBalanceByDay} from './token_balance/lpOhmLusd_balance/lpOhmLusdBalanceForDays.js'
+import {getlpOhmLusdBalanceByHour,getlpOhmLusdBalanceBy4Hour} from './token_balance/lpOhmLusd_balance/lpOhmLusdBalanceForHours.js'
+import {getlpOhmLusdBalanceByMinut} from './token_balance/lpOhmLusd_balance/lpOhmLusdBalanceForMinutes.js'
 import {getUniswapV2BalanceByDay} from './token_balance/uniswap_v2_balance/uniswapv2BalanceForDays.js'
 import {getUniswapV2BalanceByHour,getUniswapV2BalanceBy4Hour} from './token_balance/uniswap_v2_balance/uniswapv2BalanceForHours.js'
 import {getUniswapV2BalanceByMinut} from './token_balance/uniswap_v2_balance/uniswapv2BalanceForMinutes.js'
@@ -98,22 +98,22 @@ async function main() {
     fs.writeFileSync('resultLUSDDay.json', data);
     data = JSON.stringify(await getLUSDBalanceBy4Hour(1633392000));
     fs.writeFileSync('resultLUSD4Hour.json', data);
-    data = JSON.stringify(await getSUSHIBalanceByMinut(1633392000));
-    fs.writeFileSync('resultSUSHIMinute.json', data);
-    data = JSON.stringify(await getSUSHIBalanceByHour(1633392000));
-    fs.writeFileSync('resultSUSHIHour.json', data);
-    data = JSON.stringify(await getSUSHIBalanceByDay(1633392000));
-    fs.writeFileSync('resultSUSHIDay.json', data);
-    data = JSON.stringify(await getSUSHIBalanceBy4Hour(1633392000));
-    fs.writeFileSync('resultSUSHI4Hour.json', data);
-    data = JSON.stringify(await getUNIV2BalanceByMinut(1633392000));
-    fs.writeFileSync('resultUNIV2Minute.json', data);
-    data = JSON.stringify(await getUNIV2BalanceByHour(1633392000));
-    fs.writeFileSync('resultUNIV2Hour.json', data);
-    data = JSON.stringify(await getUNIV2BalanceByDay(1633392000));
-    fs.writeFileSync('resultUNIV2Day.json', data);
-    data = JSON.stringify(await getUNIV2BalanceBy4Hour(1633392000));
-    fs.writeFileSync('resultUNIV24Hour.json', data);
+    data = JSON.stringify(await getlpOhmDaiBalanceByMinut(1633392000));
+    fs.writeFileSync('resultlpOhmDaiMinute.json', data);
+    data = JSON.stringify(await getlpOhmDaiBalanceByHour(1633392000));
+    fs.writeFileSync('resultlpOhmDaiHour.json', data);
+    data = JSON.stringify(await getlpOhmDaiBalanceByDay(1633392000));
+    fs.writeFileSync('resultlpOhmDaiDay.json', data);
+    data = JSON.stringify(await getlpOhmDaiBalanceBy4Hour(1633392000));
+    fs.writeFileSync('resultlpOhmDai4Hour.json', data);
+    data = JSON.stringify(await getlpOhmLusdBalanceByMinut(1633392000));
+    fs.writeFileSync('resultlpOhmLusdMinute.json', data);
+    data = JSON.stringify(await getlpOhmLusdBalanceByHour(1633392000));
+    fs.writeFileSync('resultlpOhmLusdHour.json', data);
+    data = JSON.stringify(await getlpOhmLusdBalanceByDay(1633392000));
+    fs.writeFileSync('resultlpOhmLusdDay.json', data);
+    data = JSON.stringify(await getlpOhmLusdBalanceBy4Hour(1633392000));
+    fs.writeFileSync('resultlpOhmLusd4Hour.json', data);
     data = JSON.stringify(await getUniswapV2BalanceByMinut(1633392000));
     fs.writeFileSync('resultUniswapV2Minute.json', data);
     data = JSON.stringify(await getUniswapV2BalanceByHour(1633392000));

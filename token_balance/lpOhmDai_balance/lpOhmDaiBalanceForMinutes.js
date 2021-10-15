@@ -25,9 +25,9 @@ const minuteQuery =`
 
   `
 
-export async function getSUSHIBalanceByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
+export async function getlpOhmDaiBalanceByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
-        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getSUSHIBalanceByMinutesFromGraph()),startTimestamp,endTimestamp)
+        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getlpOhmDaiBalanceByMinutesFromGraph()),startTimestamp,endTimestamp)
     }
     catch(err)
     {
@@ -36,7 +36,7 @@ export async function getSUSHIBalanceByMinut(startTimestamp=0,endTimestamp=Date.
 }
 
 
-async function getSUSHIBalanceByMinutesFromGraph(){
+async function getlpOhmDaiBalanceByMinutesFromGraph(){
     try{
         const minuteData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,

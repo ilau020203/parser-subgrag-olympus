@@ -25,9 +25,9 @@ const minuteQuery =`
 
   `
 
-export async function getUNIV2BalanceByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
+export async function getlpOhmLusdBalanceByMinut(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
-        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getUNIV2BalanceByMinutesFromGraph()),startTimestamp,endTimestamp)
+        return fillBigArrayForMinues(reformToBigArrayForMinutes(await getlpOhmLusdBalanceByMinutesFromGraph()),startTimestamp,endTimestamp)
     }
     catch(err)
     {
@@ -36,7 +36,7 @@ export async function getUNIV2BalanceByMinut(startTimestamp=0,endTimestamp=Date.
 }
 
 
-async function getUNIV2BalanceByMinutesFromGraph(){
+async function getlpOhmLusdBalanceByMinutesFromGraph(){
     try{
         const minuteData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,

@@ -6,7 +6,7 @@ import {getWholePeriodOfTime} from '../../utils/date.js'
 const hour =60*60;
 const hourQuery =`
 {
-    balanceYears(first:1000 orderBy:timestamp where:{token:"0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c"}){
+    balanceYears(first:1000 orderBy:timestamp where:{token:"0xfDf12D1F85b5082877A6E070524f50F6c84FAa6b"}){
       day(first:366 orderBy:timestamp) {
         hour(first:24 orderBy:timestamp){
           
@@ -23,21 +23,21 @@ const hourQuery =`
 `
 
 
-export async function getSUSHIBalanceByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
+export async function getlpOhmLusdBalanceByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
        
        
-        return fillBigArrayForHours(reformToBigArrayForHours( await getSUSHIBalanceByHoursFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayForHours(reformToBigArrayForHours( await getlpOhmLusdBalanceByHoursFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
         console.log(err)
     }
 }
-export async function getSUSHIBalanceBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
+export async function getlpOhmLusdBalanceBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
 
-        return fillBigArrayFor4Hours(reformToBigArrayForHours( await getSUSHIBalanceByHoursFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayFor4Hours(reformToBigArrayForHours( await getlpOhmLusdBalanceByHoursFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
@@ -45,7 +45,7 @@ export async function getSUSHIBalanceBy4Hour(startTimestamp=0,endTimestamp=Date.
     }
 }
 
-async function getSUSHIBalanceByHoursFromGraph(){
+async function getlpOhmLusdBalanceByHoursFromGraph(){
     try{
         const hourData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,

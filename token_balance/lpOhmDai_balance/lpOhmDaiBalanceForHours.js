@@ -6,7 +6,7 @@ import {getWholePeriodOfTime} from '../../utils/date.js'
 const hour =60*60;
 const hourQuery =`
 {
-    balanceYears(first:1000 orderBy:timestamp where:{token:"0xfDf12D1F85b5082877A6E070524f50F6c84FAa6b"}){
+    balanceYears(first:1000 orderBy:timestamp where:{token:"0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c"}){
       day(first:366 orderBy:timestamp) {
         hour(first:24 orderBy:timestamp){
           
@@ -23,21 +23,21 @@ const hourQuery =`
 `
 
 
-export async function getUNIV2BalanceByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
+export async function getlpOhmDaiBalanceByHour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
        
        
-        return fillBigArrayForHours(reformToBigArrayForHours( await getUNIV2BalanceByHoursFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayForHours(reformToBigArrayForHours( await getlpOhmDaiBalanceByHoursFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
         console.log(err)
     }
 }
-export async function getUNIV2BalanceBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
+export async function getlpOhmDaiBalanceBy4Hour(startTimestamp=0,endTimestamp=Date.now()/1000){
     try{
 
-        return fillBigArrayFor4Hours(reformToBigArrayForHours( await getUNIV2BalanceByHoursFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayFor4Hours(reformToBigArrayForHours( await getlpOhmDaiBalanceByHoursFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
@@ -45,7 +45,7 @@ export async function getUNIV2BalanceBy4Hour(startTimestamp=0,endTimestamp=Date.
     }
 }
 
-async function getUNIV2BalanceByHoursFromGraph(){
+async function getlpOhmDaiBalanceByHoursFromGraph(){
     try{
         const hourData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,

@@ -16,9 +16,9 @@ const dayQuery =`
 `
 
 
-export async function getUNIV2BalanceByDay(startTimestamp=0,endTimestamp=Date.now()/1000) {
+export async function getlpOhmLusdBalanceByDay(startTimestamp=0,endTimestamp=Date.now()/1000) {
     try{
-        return fillBigArrayForDays(reformToBigArrayForDays( await getUNIV2BalanceByDaysFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayForDays(reformToBigArrayForDays( await getlpOhmLusdBalanceByDaysFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
@@ -26,7 +26,7 @@ export async function getUNIV2BalanceByDay(startTimestamp=0,endTimestamp=Date.no
     }
 }
 
-async function getUNIV2BalanceByDaysFromGraph(){
+async function getlpOhmLusdBalanceByDaysFromGraph(){
     try{
         const dayData = await axios({
             url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,//QmRpuXnecL1xjHgUUMSBaeok9Ggkpdep9KJNMLJxSbDvxZ
