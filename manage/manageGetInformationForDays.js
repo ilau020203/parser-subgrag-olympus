@@ -104,7 +104,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     }
     let j=0;
     while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
-    if(bigArray[j-1].timestamp<startTimestamp){
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,day);
         timestamp+=day;
         while(timestamp<=endTimestamp){

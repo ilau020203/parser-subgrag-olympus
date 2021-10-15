@@ -125,7 +125,7 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
        return out;
     }
     while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
-    if(bigArray[j-1].timestamp<startTimestamp){
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,hour);
         timestamp+=hour;
         while(timestamp<=endTimestamp){
@@ -216,7 +216,7 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         return out;
     }
     while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
-    if(bigArray[j-1].timestamp<startTimestamp){
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
         timestamp+=4*hour;
         while(timestamp<=endTimestamp){

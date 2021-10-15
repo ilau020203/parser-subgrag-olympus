@@ -112,7 +112,7 @@ function fillBigArrayForMinutes(bigArray,startTimestamp,endTimestamp){
         return out;
     }
     while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
-    if(bigArray[j-1].timestamp<startTimestamp){
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,minute);
         timestamp+=minute;
         while(timestamp<=endTimestamp){
