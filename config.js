@@ -1,3 +1,3 @@
 //DEPLOYMENT ID
-export const token="Qmei8Tq8QMdnP5tEWH9BCP98szXL98Esqk9xrwSuoA5GNC"
+export const token="QmSwaV58pwhwoUs3LnZqqRyHMQagGAr58XquCaQxmEmKdb"
 export const tokenForBalance="QmThVMbzn2HdxyabvifzGupXgbiLStUpzxZ3mdWoB9Z7zj"
