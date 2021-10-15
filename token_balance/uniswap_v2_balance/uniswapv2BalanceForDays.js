@@ -1,24 +1,24 @@
 import axios from 'axios'
-import { token } from '../config.js';
-import {getWholePeriodOfTime} from '../utils/date.js'
+import { tokenForBalance } from '../../config.js';
+import {getWholePeriodOfTime} from '../../utils/date.js'
 
 const day =60*60*24;
 const dayQuery =`
- {
-  reservesYearsEntities(first: 100 orderBy:timestamp) {
-    reserversDays(first: 365 orderBy:timestamp) {
-        audited
+{
+    balanceYears(first:1000 orderBy:timestamp where:{token:"0x2dcE0dDa1C2f98e0F171DE8333c3c6Fe1BbF4877"}){
+      day(first:366 orderBy:timestamp) { 
+        value
+        id
         timestamp
-        finalTotalReserves
+      }
     }
   }
-}
 `
 
 
-export async function getTotalReserveByDay(startTimestamp=0,endTimestamp=Date.now()/1000) {
+export async function getUniswapV2BalanceByDay(startTimestamp=0,endTimestamp=Date.now()/1000) {
     try{
-        return fillBigArrayForDays(reformToBigArrayForDays( await getTotalReserveByDaysFromGraph()),startTimestamp,endTimestamp);
+        return fillBigArrayForDays(reformToBigArrayForDays( await getUniswapV2BalanceByDaysFromGraph()),startTimestamp,endTimestamp);
     }
     catch(err)
     {
@@ -26,16 +26,16 @@ export async function getTotalReserveByDay(startTimestamp=0,endTimestamp=Date.no
     }
 }
 
-async function getTotalReserveByDaysFromGraph(){
+async function getUniswapV2BalanceByDaysFromGraph(){
     try{
         const dayData = await axios({
-            url: `https://api.thegraph.com/subgraphs/id/${token}`,//QmRpuXnecL1xjHgUUMSBaeok9Ggkpdep9KJNMLJxSbDvxZ
+            url: `https://api.thegraph.com/subgraphs/id/${tokenForBalance}`,//QmRpuXnecL1xjHgUUMSBaeok9Ggkpdep9KJNMLJxSbDvxZ
             method: 'post',
             data: {
               query: dayQuery
             }
           })
-        return dayData.data.data.reservesYearsEntities;
+        return dayData.data.data.balanceYears;
     }
     catch(err)
     {
@@ -50,8 +50,8 @@ async function getTotalReserveByDaysFromGraph(){
 function reformToBigArrayForDays(days){
     let out=[];
     for(let i=0; i<days.length; i++){
-        for(let j=0; j<days[i].reserversDays.length; j++){         
-            out.push(days[i].reserversDays[j]);
+        for(let j=0; j<days[i].day.length; j++){         
+            out.push(days[i].day[j]);
         }
     }
     return out;
@@ -73,7 +73,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
         if (timestamp>endTimestamp) return out;
         if(timestamp>=startTimestamp){
             out.push({
-                totalReserves:bigArray[i-1].finalTotalReserves,
+                value:bigArray[i-1].value,
                 timestamp:timestamp,
                 audited:bigArray[i-1].audited,
             });
@@ -83,7 +83,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
         while(timestamp<nextTimestamp){
             if(timestamp>=startTimestamp){
                 out.push({
-                    totalReserves:bigArray[i-1].finalTotalReserves,
+                    value:bigArray[i-1].value,
                     timestamp:timestamp,
                     audited:false,
                 });
@@ -96,7 +96,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     }
     
     out.push({
-        totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+        value:bigArray[bigArray.length-1].value,
         timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day),////?
         audited:bigArray[bigArray.length-1].audited,
     })
@@ -104,7 +104,7 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     timestamp+=day;
     while(timestamp<=endTimestamp){
         out.push({
-            totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+            value:bigArray[bigArray.length-1].value,
             timestamp:timestamp,
             audited:false,
         });
