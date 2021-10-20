@@ -129,12 +129,14 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,hour);
         timestamp+=hour;
         while(timestamp<=endTimestamp){
-            out.push({
-                timestamp:timestamp,
-                amount:0,
-                sender:[],
-                sumAmount:bigArray[bigArray.length-1].sumAmount,
-            });
+            if(timestamp>=startTimestamp){
+                out.push({
+                    timestamp:timestamp,
+                    amount:0,
+                    sender:[],
+                    sumAmount:bigArray[bigArray.length-1].sumAmount,
+                });
+            }
             timestamp+=hour;
         }
         return out;

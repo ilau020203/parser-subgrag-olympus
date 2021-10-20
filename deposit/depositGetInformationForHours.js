@@ -117,6 +117,8 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
+        if (timestamp>endTimestamp) return out;
+
         if(timestamp>=startTimestamp){
             out.push({
                 timestamp:timestamp,
@@ -131,16 +133,20 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
         }
         timestamp+=hour;
         while(timestamp<nextTimestamp){
-            out.push({
-                timestamp:timestamp,
-                profit:0,
-                amount:0,
-                value:0,
-                sender:[],
-                sumValue:bigArray[i-1].sumValue,
-                sumProfit:bigArray[i-1].sumProfit,
-                sumAmount:bigArray[i-1].sumAmount,
-            });
+            if (timestamp>endTimestamp) return out;
+
+            if(timestamp>=startTimestamp){
+                out.push({
+                    timestamp:timestamp,
+                    profit:0,
+                    amount:0,
+                    value:0,
+                    sender:[],
+                    sumValue:bigArray[i-1].sumValue,
+                    sumProfit:bigArray[i-1].sumProfit,
+                    sumAmount:bigArray[i-1].sumAmount,
+                });
+            }
             timestamp+=hour;
         }       
     }
@@ -158,16 +164,18 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),hour);
     timestamp+=hour;
     while(timestamp<=endTimestamp){
-        out.push({
-            timestamp:timestamp,
-            profit:0,
-            amount:0,
-            value:0,
-            sender:[],
-            sumValue:bigArray[bigArray.length-1].sumValue,
-            sumProfit:bigArray[bigArray.length-1].sumProfit,
-            sumAmount:bigArray[bigArray.length-1].sumAmount,
-        });
+        if(timestamp>=startTimestamp){
+            out.push({
+                timestamp:timestamp,
+                profit:0,
+                amount:0,
+                value:0,
+                sender:[],
+                sumValue:bigArray[bigArray.length-1].sumValue,
+                sumProfit:bigArray[bigArray.length-1].sumProfit,
+                sumAmount:bigArray[bigArray.length-1].sumAmount,
+            });
+        }
         timestamp+=hour;
     }
     return out;

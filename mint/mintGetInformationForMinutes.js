@@ -76,20 +76,27 @@ function fillBigArrayForMinutes(bigArray,startTimestamp,endTimestamp){
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)
-        out.push({
-            amount:bigArray[i-1].amount,
-            timestamp:timestamp,
-            recipient:bigArray[i-1].recipient,
-            caller:bigArray[i-1].caller,
-        });
+        if (timestamp>endTimestamp) return out;
+        if(timestamp>=startTimestamp){
+            out.push({
+                amount:bigArray[i-1].amount,
+                timestamp:timestamp,
+                recipient:bigArray[i-1].recipient,
+                caller:bigArray[i-1].caller,
+            });
+        }
         timestamp+=minute;
         while(timestamp<nextTimestamp){
-            out.push({
-                amount:0,
-                timestamp:timestamp,
-                recipient:[],
-                caller:[]
-            });
+            if (timestamp>endTimestamp) return out;
+
+            if(timestamp>=startTimestamp){
+                out.push({
+                    amount:0,
+                    timestamp:timestamp,
+                    recipient:[],
+                    caller:[]
+                });
+            }
             timestamp+=minute;
         }
         

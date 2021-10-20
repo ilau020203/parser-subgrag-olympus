@@ -113,6 +113,8 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
         if (timestamp>endTimestamp) return out;
 
         while(timestamp<nextTimestamp){
+            if (timestamp>endTimestamp) return out;
+
             if(timestamp>=startTimestamp){
                 out.push({
                     timestamp:timestamp,
@@ -144,17 +146,21 @@ function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),day);
     timestamp+=day;
     while(timestamp<=endTimestamp){
-        out.push({
-            timestamp:timestamp,
-            profit:0,
-            amount:0,
-            value:0,
-            sender:[],
-            sumValue:bigArray[bigArray.length-1].sumValue,
-            sumProfit:bigArray[bigArray.length-1].sumProfit,
-            sumAmount:bigArray[bigArray.length-1].sumAmount,
-        });
-        timestamp+=day;
+        if (timestamp>endTimestamp) return out;
+
+        if(timestamp>=startTimestamp){
+            out.push({
+                timestamp:timestamp,
+                profit:0,
+                amount:0,
+                value:0,
+                sender:[],
+                sumValue:bigArray[bigArray.length-1].sumValue,
+                sumProfit:bigArray[bigArray.length-1].sumProfit,
+                sumAmount:bigArray[bigArray.length-1].sumAmount,
+            });
+            timestamp+=day;
+        }
     }
     return out;
 }
