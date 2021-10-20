@@ -168,7 +168,7 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
             sumProfit:bigArray[bigArray.length-1].sumProfit,
             sumAmount:bigArray[bigArray.length-1].sumAmount,
         });
-        timestamp+=4*hour;
+        timestamp+=hour;
     }
     return out;
 }
