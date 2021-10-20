@@ -5,7 +5,7 @@ import {getWholePeriodOfTime} from '../../utils/date.js'
 const day =60*60*24;
 const dayQuery =`
 {
-    balanceYears(first:1000 orderBy:timestamp where:{token:"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}){
+    balanceYears(first:1000 orderBy:timestamp where:{token:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}){
       day(first:366 orderBy:timestamp) { 
         value
         id
@@ -63,8 +63,19 @@ function reformToBigArrayForDays(days){
  */
 function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     let j=0;
-    while(bigArray[j].timestamp<startTimestamp) j++;
-
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,day);
+        timestamp+=day;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=day;
+        }
+        return out;
+    }
 
     let out = [];
     for(let i=j==0?1:j;i<bigArray.length;i++){

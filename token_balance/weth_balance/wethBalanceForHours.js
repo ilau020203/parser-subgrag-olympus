@@ -6,7 +6,7 @@ import {getWholePeriodOfTime} from '../../utils/date.js'
 const hour =60*60;
 const hourQuery =`
 {
-    balanceYears(first:1000 orderBy:timestamp where:{token:"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}){
+    balanceYears(first:1000 orderBy:timestamp where:{token:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}){
       day(first:366 orderBy:timestamp) {
         hour(first:24 orderBy:timestamp){
           
@@ -86,7 +86,19 @@ function reformToBigArrayForHours(days){
 function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
-    while(bigArray[j].timestamp<startTimestamp) j++;
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,hour);
+        timestamp+=hour;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=hour;
+        }
+        return out;
+    }
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
@@ -138,7 +150,19 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
 function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
-    while(bigArray[j].timestamp<startTimestamp) j++;
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
+        timestamp+=4*hour;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1-1].value,
+            });
+            timestamp+=4*hour;
+        }
+        return out;
+    }
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
