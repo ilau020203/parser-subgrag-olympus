@@ -239,7 +239,7 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         sender=sender.concat(bigArray[i-1].sender)
         if (timestamp>endTimestamp) return out;
         if(timestamp>=startTimestamp){
-            if(fragment%4==0)
+            if(fragment%4==3)
             {
                 out.push({
                     timestamp:timestamp,
@@ -256,7 +256,7 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         while(timestamp<nextTimestamp){
             if (timestamp>endTimestamp) return out;
             if(timestamp>=startTimestamp){
-                if(fragment%4==0)
+                if(fragment%4==3)
                 {
                     out.push({
                         timestamp:timestamp,
@@ -275,13 +275,13 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     }
     
     out.push({
-        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
+        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour)+3*hour,
         amount:bigArray[bigArray.length-1].amount,
         sender:bigArray[bigArray.length-1].sender,
        
         sumAmount:bigArray[bigArray.length-1].sumAmount,
     })
-    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
+    let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour)+3*hour;
     timestamp+=4*hour;
     while(timestamp<=endTimestamp){
         out.push({
