@@ -160,7 +160,7 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         recipient.concat(bigArray[i-1].recipient)
         if (timestamp>endTimestamp) return out;
         if(timestamp>=startTimestamp){
-            if(fragment%4==3)
+            if(fragment%4==0)
             {
                 out.push({
                     amount:bigArray[i-1].amount,
@@ -178,7 +178,7 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         while(timestamp<nextTimestamp){
             if (timestamp>endTimestamp) return out;
             if(timestamp>=startTimestamp){
-                if(fragment%4==3)
+                if(fragment%4==0)
                 {
                     out.push({
                         amount:amount,
