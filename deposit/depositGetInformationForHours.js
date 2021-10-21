@@ -200,15 +200,16 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let j=0;
     while(bigArray[j].timestamp<startTimestamp) j++;
     for(let i=j==0?1:j;i<bigArray.length;i++){
-        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
-        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
+        let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
+        let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         profit+=bigArray[i-1].profit
         if (timestamp>endTimestamp) return out;
          amount+=bigArray[i-1].amount
          value+=bigArray[i-1].value
          sender=sender.concat(bigArray[i-1].sender)
+        
          if(timestamp>=startTimestamp){
-            if(fragment%4==0)
+            if(timestamp%(4*hour)==0)
             {
                 out.push({
                     timestamp:timestamp,
@@ -231,7 +232,7 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         if (timestamp>endTimestamp) return out;
         while(timestamp<nextTimestamp){
             if(timestamp>=startTimestamp){
-                if(fragment%4==0)
+                if(timestamp%(4*hour)==0)
                 {
                     out.push({
                         timestamp:timestamp,
