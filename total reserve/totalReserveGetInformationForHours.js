@@ -172,12 +172,15 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
             if (timestamp>endTimestamp) return out;
         }        
     }
-    
-    out.push({
-        totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
-        timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
-        audited:bigArray[bigArray.length-1].audited,
-    })
+    if(out[out.length-1].timestamp!=getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour)){
+        out.push({
+            totalReserves:bigArray[bigArray.length-1].finalTotalReserves,
+            timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
+            audited:bigArray[bigArray.length-1].audited,
+        })
+    }else{
+        out[out.length-1].totalReserves=bigArray[bigArray.length-1].finalTotalReserves;
+    }
     let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
     timestamp+=4*hour;
     while(timestamp<=endTimestamp){
