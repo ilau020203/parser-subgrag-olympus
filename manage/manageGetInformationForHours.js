@@ -125,6 +125,18 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
        return out;
     }
     while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(bigArray[0].timestamp>startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
+        while(timestamp<=bigArray[0].timestamp){
+            out.push({
+                timestamp,
+                amount:0,
+                sender:[],
+                sumAmount:0,
+            });
+            timestamp+=4*hour;
+        }
+    }
     if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,hour);
         timestamp+=hour;
@@ -297,16 +309,19 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         sender=[]
         
     }else{
-        out.push({
-            timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
-            amount:bigArray[bigArray.length-1].amount,
-            sender:bigArray[bigArray.length-1].sender,
-            sumAmount:bigArray[bigArray.length-1].sumAmount,
-        })
+        if(startTimestamp<=getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour)){
+            out.push({
+                timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
+                amount:bigArray[bigArray.length-1].amount,
+                sender:bigArray[bigArray.length-1].sender,
+                sumAmount:bigArray[bigArray.length-1].sumAmount,
+            })
+        }
     }
     let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
     timestamp+=4*hour;
     while(timestamp<=endTimestamp){
+        if(timestamp<startTimestamp) continue;
         out.push({
             timestamp:timestamp,
             amount:0,
