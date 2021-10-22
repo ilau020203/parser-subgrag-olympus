@@ -321,7 +321,10 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
     timestamp+=4*hour;
     while(timestamp<=endTimestamp){
-        if(timestamp<startTimestamp) continue;
+        if(timestamp<startTimestamp){
+            timestamp+=4*hour;
+            continue;
+        }
         out.push({
             timestamp:timestamp,
             amount:0,
