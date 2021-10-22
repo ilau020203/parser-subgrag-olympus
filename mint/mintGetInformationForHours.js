@@ -256,3 +256,30 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     }
     return out;
 }
+
+
+function fillBigArrayForNHours(stakes,startTimestamp,endTime,hours){
+    let data=[]
+    for(let beginTimestamp = startTimestamp, endTimestamp = startTimestamp + hours*3600; beginTimestamp < endTime; beginTimestamp += hours*3600, endTimestamp+=hours*3600)
+    {
+      let obj = {
+        timestamp: beginTimestamp,
+        endTimestamp: endTimestamp,
+        amount: 0,
+        recipient:[],
+        caller:[]
+      }
+      for(let j = 0; j < stakes.length; ++j)
+      {
+        
+        if(beginTimestamp <= stakes[j].timestamp && stakes[j].timestamp < endTimestamp)
+        {
+          obj.amount += Number(stakes[j].amount)
+          obj.recipient.concat(stakes[j].recipient)
+          obj.caller.concat(stakes[j].caller)
+        }
+      }
+      data.push(obj)
+    }
+    return data
+}

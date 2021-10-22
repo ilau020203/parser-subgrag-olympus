@@ -44,7 +44,7 @@ export async function getManageBy4Hour(startTimestamp=0,endTimestamp=Date.now()/
         let bigArray=await reformToBigArrayForHour(await getManageByHoursFromGraph());
      
         for(let i=0;i<bigArray.length;i++){
-            bigArray[i].array=fillBigArrayFor4Hours( bigArray[i].array,startTimestamp,endTimestamp);
+            bigArray[i].array=fillBigArrayForNHours( bigArray[i].array,startTimestamp,endTimestamp,4);
         }
         
         return bigArray;
@@ -334,4 +334,30 @@ function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
         timestamp+=4*hour;
     }
     return out;
+}
+
+function fillBigArrayForNHours(stakes,startTimestamp,endTime,hours){
+    let data=[]
+    for(let beginTimestamp = startTimestamp, endTimestamp = startTimestamp + hours*3600; beginTimestamp < endTime; beginTimestamp += hours*3600, endTimestamp+=hours*3600)
+    {
+      let obj = {
+        timestamp: beginTimestamp,
+        endTimestamp: endTimestamp,
+        amount: 0,
+        sumAmount:data.length==0?0:data[data.length-1].sumAmount,
+        sender:[]
+      }
+      for(let j = 0; j < stakes.length; ++j)
+      {
+        
+        if(beginTimestamp <= stakes[j].timestamp && stakes[j].timestamp < endTimestamp)
+        {
+          obj.amount += Number(stakes[j].amount)
+          obj.sumAmount = Number(stakes[j].sumAmount)
+          obj.sender.concat(stakes[j].sender)
+        }
+      }
+      data.push(obj)
+    }
+    return data
 }
