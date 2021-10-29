@@ -12,4 +12,4 @@ You can make requests with a frequency of a minute, hour, 4 hours and day for a 
     import {getTotalReserveByMinut} from './total reserve/totalReserveGetInformationForMinutes.js'
     let startTimestamp = 1633392000 //timestamp in seconds
     let endTimestamp = 1633996800 //timestamp in seconds
-    data = await getBalanceForDay(startTimestamp,1633996800)
+    data = await getBalanceForDay(startTimestamp,endTimestamp)
