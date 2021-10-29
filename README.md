@@ -1,5 +1,5 @@
 # Parser  olympus subgraph 
-This repository contains functions for sending requests to treasury and    subgraph subgraph for Tracking Major Tokens Owned by OlympusDAO Treasury Contract ,and parse data from requests
+This repository contains functions for sending requests to Treasury subgraphs (<a href="https://github.com/ilau020203/olympus-subgraph-tokens" target="_blank">Treasury token balances </a> and <a href="https://github.com/ilau020203/graph" target="_blank"> Treasury smart contract functions parameters</a>)  and parsing data from these requests.You can make requests with a frequency of a minute, hour, 4 hours and day for a certain period of time.
 You can make requests with a frequency of a minute, hour, 4 hours and day for a certain period of time.
 
 ## Usage
