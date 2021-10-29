@@ -116,12 +116,16 @@ function fillBigArrayForMinutes(bigArray,startTimestamp,endTimestamp){
         let timestamp =getWholePeriodOfTime(startTimestamp,minute);
         timestamp+=minute;
         while(timestamp<=endTimestamp){
-            out.push({
-                timestamp:timestamp,
-                amount:0,
-                sender:[],
-                sumAmount:bigArray[bigArray.length-1].sumAmount,
-            });
+            if (timestamp>endTimestamp) return out;
+
+            if(timestamp>=startTimestamp){
+                out.push({
+                    timestamp:timestamp,
+                    amount:0,
+                    sender:[],
+                    sumAmount:bigArray[bigArray.length-1].sumAmount,
+                });
+            }
             timestamp+=minute;
         }
         return out;

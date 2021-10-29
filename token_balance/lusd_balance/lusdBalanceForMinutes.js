@@ -80,8 +80,20 @@ function reformToBigArrayForMinutes(days){
 function fillBigArrayForMinues(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
-
-    while(bigArray[j].timestamp<startTimestamp) j++;
+    console.log(bigArray)
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,minute);
+        timestamp+=minute;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=minute;
+        }
+        return out;
+    }
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),minute)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),minute)

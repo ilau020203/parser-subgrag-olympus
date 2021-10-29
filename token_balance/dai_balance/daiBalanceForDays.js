@@ -63,7 +63,19 @@ function reformToBigArrayForDays(days){
  */
 function fillBigArrayForDays(bigArray,startTimestamp,endTimestamp){
     let j=0;
-    while(bigArray[j].timestamp<startTimestamp) j++;
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,day);
+        timestamp+=day;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=day;
+        }
+        return out;
+    }
 
 
     let out = [];

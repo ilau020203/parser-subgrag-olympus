@@ -86,7 +86,19 @@ function reformToBigArrayForHours(days){
 function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
-    while(bigArray[j].timestamp<startTimestamp) j++;
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,hour);
+        timestamp+=hour;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=hour;
+        }
+        return out;
+    }
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
@@ -138,7 +150,31 @@ function fillBigArrayForHours(bigArray,startTimestamp,endTimestamp){
 function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
     let out = [];
     let j=0;
-    while(bigArray[j].timestamp<startTimestamp) j++;
+    while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
+        timestamp+=4*hour;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=4*hour;
+        }
+        return out;
+    }
+    if(j!=0&&bigArray[j-1].timestamp<startTimestamp){
+        let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
+        timestamp+=4*hour;
+        while(timestamp<=endTimestamp){
+            out.push({
+                timestamp:timestamp,
+                value:bigArray[bigArray.length-1].value,
+            });
+            timestamp+=4*hour;
+        }
+        return out;
+    }
     for(let i=j==0?1:j;i<bigArray.length;i++){
         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),4*hour)
         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),4*hour)
